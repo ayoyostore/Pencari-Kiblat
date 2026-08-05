@@ -80,7 +80,8 @@
       border: 8px solid #ffffff;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
       position: relative;
-      transition: transform 0.1s ease-out;
+      /* Transisi mulus untuk meredam gerakan cepat */
+      transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     .cardinal {
@@ -138,7 +139,6 @@
       margin-top: -90px;
       margin-left: -8px;
       pointer-events: none;
-      transition: transform 0.1s ease-out;
     }
 
     .needle-north {
@@ -232,6 +232,15 @@
     .btn-permission:hover {
       background: #2563eb;
     }
+
+    .calibration-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 420px;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -279,6 +288,10 @@
     Aktifkan Sensor Kompas
   </button>
 
+  <p class="calibration-note">
+    💡 <b>Tips Kalibrasi:</b> Jika gerakan kompas kurang stabil, ayunkan HP Anda membentuk pola angka 8 di udara beberapa kali untuk mereset sensor magnetometer.
+  </p>
+
   <script>
     const KAABA_LAT = 21.422487;
     const KAABA_LNG = 39.826206;
@@ -286,7 +299,13 @@
     let userLat = null;
     let userLng = null;
     let qiblaBearing = null;
-    let currentHeading = 0;
+
+    // Filter Smoothing (Exponential Moving Average)
+    let smoothHeading = null;
+    let smoothX = 0;
+    let smoothY = 0;
+    const ALPHA = 0.15; // Faktor kehalusan (0.10 - 0.20 ideal)
+    let lastRotationAngle = 0;
 
     const dial = document.getElementById('compassDial');
     for (let i = 0; i < 360; i += 15) {
@@ -327,7 +346,9 @@
           qiblaMarker.style.transform = `rotate(${qiblaBearing}deg)`;
           qiblaMarker.style.display = 'flex';
 
-          updateCompassUI();
+          if (smoothHeading !== null) {
+            updateCompassUI(smoothHeading);
+          }
         },
         (error) => {
           document.getElementById('userLocation').innerText = 'Akses lokasi ditolak';
@@ -340,27 +361,51 @@
     }
 
     function handleOrientation(event) {
-      let heading = null;
+      let rawHeading = null;
 
       if (event.webkitCompassHeading !== undefined && event.webkitCompassHeading !== null) {
-        heading = event.webkitCompassHeading;
+        rawHeading = event.webkitCompassHeading;
       } else if (event.alpha !== null) {
-        heading = (360 - event.alpha) % 360;
+        rawHeading = (360 - event.alpha) % 360;
       }
 
-      if (heading !== null) {
-        currentHeading = heading;
-        updateCompassUI();
+      if (rawHeading !== null) {
+        // Konversi derajat ke vektor (x, y)
+        const rad = rawHeading * Math.PI / 180;
+        const x = Math.cos(rad);
+        const y = Math.sin(rad);
+
+        if (smoothHeading === null) {
+          smoothX = x;
+          smoothY = y;
+        } else {
+          // Low-Pass Filter
+          smoothX = smoothX * (1 - ALPHA) + x * ALPHA;
+          smoothY = smoothY * (1 - ALPHA) + y * ALPHA;
+        }
+
+        const headingRad = Math.atan2(smoothY, smoothX);
+        const headingDeg = headingRad * 180 / Math.PI;
+        smoothHeading = (headingDeg + 360) % 360;
+
+        updateCompassUI(smoothHeading);
       }
     }
 
-    function updateCompassUI() {
+    function updateCompassUI(heading) {
+      // Hitung selisih lintasan sudut terkecil
+      let diff = heading - (lastRotationAngle % 360);
+      if (diff < -180) diff += 360;
+      if (diff > 180) diff -= 360;
+
+      lastRotationAngle += diff;
+
       const compassDial = document.getElementById('compassDial');
-      compassDial.style.transform = `rotate(${-currentHeading}deg)`;
+      compassDial.style.transform = `rotate(${-lastRotationAngle}deg)`;
 
       if (qiblaBearing !== null) {
-        const diff = Math.abs((currentHeading - qiblaBearing + 360) % 360);
-        const isAligned = diff < 4 || diff > 356;
+        const angleDiff = Math.abs((heading - qiblaBearing + 360) % 360);
+        const isAligned = angleDiff < 4 || angleDiff > 356;
 
         const banner = document.getElementById('statusBanner');
         if (isAligned) {
