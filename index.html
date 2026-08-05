@@ -211,6 +211,14 @@ cursor:pointer;
 </div>
 
 <div class="item">
+    
+<span>Heading</span>
+    
+<span id="heading" class="value">0°</span>
+    
+</div>
+
+<div class="item">
 
 <span>Arah Kiblat</span>
 
@@ -237,6 +245,14 @@ const kaabaLng=39.826206;
 let heading = 0;
     
 let qibla = 0;
+
+let targetHeading = 0;
+    
+let smoothHeading = 0;
+
+let animationStarted = false;
+
+const DEAD_ZONE = 0.5;
 
 function rad(x){
 
@@ -268,13 +284,18 @@ return (brng+360)%360;
 
 }
 
-function getLocation(){
+function updateCompass(){
 
-navigator.geolocation.getCurrentPosition(success,error,{
+    const needle =
+    document.getElementById("needle");
 
-enableHighAccuracy:true
+    let angle =
+    qibla-smoothHeading;
 
-});
+    angle=((angle+540)%360)-180;
+
+    needle.style.transform=
+    `rotate(${angle}deg)`;
 
 }
 
@@ -300,38 +321,108 @@ alert("Lokasi tidak tersedia");
 
 }
 
-function updateCompass(){
+function orientationHandler(event){
 
-    const needle = document.getElementById("needle");
+    let newHeading = null;
 
-    const angle = qibla - heading;
+    // Safari / iPhone
+    if(typeof event.webkitCompassHeading === "number"){
 
-    needle.style.transform =
-        `rotate(${angle}deg)`;
+        newHeading = event.webkitCompassHeading;
+
+    }
+    // Android
+    else if(event.alpha !== null){
+
+        newHeading = 360 - event.alpha;
+
+    }
+
+    if(newHeading === null) return;
+
+    newHeading = (newHeading + 360) % 360;
+
+    targetHeading = newHeading;
 
 }
 
-function orientationHandler(event){
+document.getElementById("heading").innerHTML =
+targetHeading.toFixed(1)+"°";
 
-    if(event.webkitCompassHeading){
+function shortestAngle(current,target){
 
-        heading = event.webkitCompassHeading;
+    let diff = target-current;
 
-    }else if(event.alpha!=null){
+    diff = ((diff+540)%360)-180;
 
-        heading = 360-event.alpha;
+    return diff;
+
+}
+
+function animateCompass(){
+
+    let diff = shortestAngle(
+        smoothHeading,
+        targetHeading
+    );
+
+    if(Math.abs(diff)>DEAD_ZONE){
+
+        let alpha;
+
+        if(Math.abs(diff)>60){
+
+    alpha=0.28;
+
+}else if(Math.abs(diff)>25){
+
+    alpha=0.18;
+
+}else if(Math.abs(diff)>10){
+
+    alpha=0.12;
+
+}else{
+
+    alpha=0.05;
+
+}
+
+        smoothHeading += diff*alpha;
+
+        smoothHeading =
+        (smoothHeading+360)%360;
 
     }
 
     updateCompass();
 
+    requestAnimationFrame(
+        animateCompass
+    );
+
 }
 
+function getLocation(){
+
+    navigator.geolocation.getCurrentPosition(
+        success,
+        error,
+        {
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:0
+        }
+    );
+
+}
+    
 function startCompass(){
 
-    if(typeof DeviceOrientationEvent!=="undefined"
-    && typeof DeviceOrientationEvent.requestPermission==="function"){
+    if(typeof DeviceOrientationEvent !== "undefined" &&
+       typeof DeviceOrientationEvent.requestPermission === "function"){
 
+        // iPhone / iPad
         DeviceOrientationEvent.requestPermission()
         .then(permission=>{
 
@@ -343,17 +434,35 @@ function startCompass(){
                     true
                 );
 
+                if(!animationStarted){
+                    animationStarted=true;
+                    animateCompass();
+                }
+
             }
 
         });
 
     }else{
 
+        // Android
+
         window.addEventListener(
             "deviceorientationabsolute",
             orientationHandler,
             true
         );
+
+        window.addEventListener(
+            "deviceorientation",
+            orientationHandler,
+            true
+        );
+
+        if(!animationStarted){
+            animationStarted=true;
+            animateCompass();
+        }
 
     }
 
