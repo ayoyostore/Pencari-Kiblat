@@ -44,7 +44,6 @@
             gap: 20px;
         }
 
-        /* Responsive Layout untuk Mode Lanskap & Tablet */
         @media (min-width: 620px) or (orientation: landscape) {
             .app-layout {
                 flex-direction: row;
@@ -78,11 +77,12 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 18px;
-            height: 18px;
-            margin-left: -9px;
-            margin-top: -9px;
-            background: #333;
+            width: 16px;
+            height: 16px;
+            margin-left: -8px;
+            margin-top: -8px;
+            background: #2e7d32;
+            border: 2px solid #fff;
             border-radius: 50%;
             z-index: 100;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -101,7 +101,7 @@
         .north, .east, .south, .west {
             position: absolute;
             font-weight: bold;
-            font-size: 22px;
+            font-size: 20px;
             z-index: 5;
         }
 
@@ -133,45 +133,39 @@
             color: #333;
         }
 
-        /* Jarum Kompas Dibuat Lebih Pendek (Total 120px) */
-        .needle {
+        /* Container Penanda Kiblat (Jarum Panah + Ikon Ka'bah) */
+        .qibla-pointer-wrapper {
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 12px;
-            height: 120px;
-            transform: translate(-50%, -50%);
-            z-index: 10;
+            transform-origin: center center;
+            z-index: 30;
             pointer-events: none;
+        }
+
+        .qibla-pointer {
             display: flex;
             flex-direction: column;
             align-items: center;
+            transform: translate(-50%, -100%);
         }
 
-        .needle-north {
+        .kaaba-icon {
+            font-size: 32px;
+            line-height: 1;
+            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.3));
+            background: rgba(46, 125, 50, 0.12);
+            border-radius: 50%;
+            padding: 4px;
+            margin-bottom: 2px;
+        }
+
+        .qibla-arrow {
             width: 0;
             height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 60px solid #d32f2f; /* Merah -> Utara */
-        }
-
-        .needle-south {
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 60px solid #212121; /* Hitam -> Selatan */
-        }
-
-        /* Penanda Ka'bah berada di bagian atas kompas */
-        .qibla-marker {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            font-size: 28px;
-            z-index: 20;
-            transform: translate(-50%, -50%) translateY(-75px);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 50px solid #2e7d32; /* Panah Penunjuk Hijau ke Ka'bah */
         }
 
         .info {
@@ -276,14 +270,16 @@
                     <div class="east">T</div>
                     <div class="south">S</div>
                     <div class="west">B</div>
-                    
-                    <div class="needle">
-                        <div class="needle-north"></div>
-                        <div class="needle-south"></div>
+
+                    <!-- Penanda Kiblat dengan Presisi Panah & Ka'bah -->
+                    <div id="qiblaWrapper" class="qibla-pointer-wrapper">
+                        <div class="qibla-pointer">
+                            <div class="kaaba-icon" role="img" aria-label="Ka'bah">🕋</div>
+                            <div class="qibla-arrow"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="qiblaMarker" class="qibla-marker" role="img" aria-label="Ka'bah">🕋</div>
                 <div class="center"></div>
             </div>
         </div>
@@ -374,8 +370,10 @@ function qiblaBearing(lat, lng) {
 
 function updateCompass() {
     const dial = document.getElementById("dial");
-    // Putar seluruh dial kompas sesuai heading agar arah Kiblat/Utara selalu akurat
-    dial.style.transform = `rotate(${qibla - smoothHeading}deg)`;
+    dial.style.transform = `rotate(${-smoothHeading}deg)`;
+
+    const qiblaWrapper = document.getElementById("qiblaWrapper");
+    qiblaWrapper.style.transform = `rotate(${qibla}deg)`;
 }
 
 function getScreenOrientation() {
@@ -392,19 +390,16 @@ function orientationHandler(event) {
     let heading = null;
     let isIOS = false;
 
-    // iOS Safari
     if (typeof event.webkitCompassHeading === "number") {
         heading = event.webkitCompassHeading;
         isIOS = true;
     } 
-    // Android / Browser Standar
     else if (event.alpha !== null) {
         heading = 360 - event.alpha;
     }
 
     if (heading === null) return;
 
-    // Penyesuaian rotasi layar (Non-iOS)
     if (!isIOS) {
         let screenAngle = getScreenOrientation();
         heading = (heading + screenAngle + 360) % 360;
@@ -480,6 +475,7 @@ function setLocationData(lat, lng) {
 
     qibla = qiblaBearing(lat, lng);
     document.getElementById("bearing").innerHTML = qibla.toFixed(2) + "°";
+    updateCompass();
 }
 
 function toggleManualInput() {
