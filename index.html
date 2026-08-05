@@ -85,6 +85,7 @@
             background: #333;
             border-radius: 50%;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .dial {
@@ -101,6 +102,7 @@
             position: absolute;
             font-weight: bold;
             font-size: 22px;
+            z-index: 5;
         }
 
         .north {
@@ -114,18 +116,52 @@
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
+            color: #333;
         }
 
         .south {
             left: 50%;
             bottom: 10px;
             transform: translateX(-50%);
+            color: #333;
         }
 
         .west {
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
+            color: #333;
+        }
+
+        /* Desain Jarum Kompas (Merah -> Utara, Hitam -> Selatan) */
+        .needle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 12px;
+            height: 170px;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .needle-north {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 85px solid #d32f2f; /* Merah untuk Utara */
+        }
+
+        .needle-south {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 85px solid #212121; /* Hitam untuk Selatan */
         }
 
         .qibla-marker {
@@ -181,7 +217,7 @@
             background: #455a64;
         }
 
-        /* Kotak Input Manual */
+        /* Form Input Lokasi Manual */
         .manual-box {
             display: none;
             margin-top: 12px;
@@ -241,8 +277,18 @@
                     <div class="east">T</div>
                     <div class="south">S</div>
                     <div class="west">B</div>
+                    
+                    <!-- Jarum Kompas Merah & Hitam -->
+                    <div class="needle">
+                        <div class="needle-north"></div>
+                        <div class="needle-south"></div>
+                    </div>
                 </div>
+
+                <!-- Penanda Arah Kiblat -->
                 <div id="qiblaMarker" class="qibla-marker">🕋</div>
+                
+                <!-- Poros Tengah -->
                 <div class="center"></div>
             </div>
         </div>
