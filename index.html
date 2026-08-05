@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -43,7 +44,7 @@
             gap: 20px;
         }
 
-        /* Penanganan Mode Lanskap & Layar Lebar */
+        /* Responsive Layout untuk Mode Lanskap & Tablet */
         @media (min-width: 620px) or (orientation: landscape) {
             .app-layout {
                 flex-direction: row;
@@ -132,13 +133,13 @@
             color: #333;
         }
 
-        /* Desain Jarum Kompas (Merah -> Utara, Hitam -> Selatan) */
+        /* Jarum Kompas Dibuat Lebih Pendek (Total 120px) */
         .needle {
             position: absolute;
             left: 50%;
             top: 50%;
             width: 12px;
-            height: 170px;
+            height: 120px;
             transform: translate(-50%, -50%);
             z-index: 10;
             pointer-events: none;
@@ -152,7 +153,7 @@
             height: 0;
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
-            border-bottom: 85px solid #d32f2f; /* Merah untuk Utara */
+            border-bottom: 60px solid #d32f2f; /* Merah -> Utara */
         }
 
         .needle-south {
@@ -160,16 +161,17 @@
             height: 0;
             border-left: 6px solid transparent;
             border-right: 6px solid transparent;
-            border-top: 85px solid #212121; /* Hitam untuk Selatan */
+            border-top: 60px solid #212121; /* Hitam -> Selatan */
         }
 
+        /* Penanda Ka'bah berada di bagian atas kompas */
         .qibla-marker {
             position: absolute;
             left: 50%;
             top: 50%;
             font-size: 28px;
             z-index: 20;
-            transform-origin: center center;
+            transform: translate(-50%, -50%) translateY(-75px);
         }
 
         .info {
@@ -216,7 +218,6 @@
             background: #455a64;
         }
 
-        /* Form Input Lokasi Manual */
         .manual-box {
             display: none;
             margin-top: 12px;
@@ -249,7 +250,6 @@
             font-size: 14px;
         }
 
-        /* Panduan Kalibrasi */
         .calibration-tip {
             margin-top: 15px;
             padding: 10px 12px;
@@ -277,17 +277,13 @@
                     <div class="south">S</div>
                     <div class="west">B</div>
                     
-                    <!-- Jarum Kompas Merah & Hitam -->
                     <div class="needle">
                         <div class="needle-north"></div>
                         <div class="needle-south"></div>
                     </div>
                 </div>
 
-                <!-- Penanda Arah Kiblat -->
-                <div id="qiblaMarker" class="qibla-marker">🕋</div>
-                
-                <!-- Poros Tengah -->
+                <div id="qiblaMarker" class="qibla-marker" role="img" aria-label="Ka'bah">🕋</div>
                 <div class="center"></div>
             </div>
         </div>
@@ -320,7 +316,6 @@
                 ⚙️ Input Lokasi Manual
             </button>
 
-            <!-- Form Lokasi Manual -->
             <div id="manualBox" class="manual-box">
                 <div class="input-group">
                     <label for="citySelect">Pilih Kota Populer:</label>
@@ -361,6 +356,7 @@ let qibla = 0;
 let targetHeading = 0;
 let smoothHeading = 0;
 let animationStarted = false;
+let isSensorInitialized = false;
 const DEAD_ZONE = 0.5;
 
 function rad(x) { return x * Math.PI / 180; }
@@ -378,11 +374,8 @@ function qiblaBearing(lat, lng) {
 
 function updateCompass() {
     const dial = document.getElementById("dial");
-    dial.style.transform = `rotate(${-smoothHeading}deg)`;
-
-    const qiblaMarker = document.getElementById("qiblaMarker");
-    const angle = qibla - smoothHeading;
-    qiblaMarker.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px)`;
+    // Putar seluruh dial kompas sesuai heading agar arah Kiblat/Utara selalu akurat
+    dial.style.transform = `rotate(${qibla - smoothHeading}deg)`;
 }
 
 function getScreenOrientation() {
@@ -397,10 +390,12 @@ function getScreenOrientation() {
 
 function orientationHandler(event) {
     let heading = null;
+    let isIOS = false;
 
     // iOS Safari
     if (typeof event.webkitCompassHeading === "number") {
         heading = event.webkitCompassHeading;
+        isIOS = true;
     } 
     // Android / Browser Standar
     else if (event.alpha !== null) {
@@ -409,9 +404,11 @@ function orientationHandler(event) {
 
     if (heading === null) return;
 
-    // Penyesuaian rotasi layar (Portrait / Landscape)
-    let screenAngle = getScreenOrientation();
-    heading = (heading + screenAngle + 360) % 360;
+    // Penyesuaian rotasi layar (Non-iOS)
+    if (!isIOS) {
+        let screenAngle = getScreenOrientation();
+        heading = (heading + screenAngle + 360) % 360;
+    }
 
     targetHeading = heading;
     document.getElementById("heading").innerHTML = targetHeading.toFixed(1) + "°";
@@ -442,11 +439,14 @@ function animateCompass() {
 }
 
 function initSensors() {
+    if (isSensorInitialized) return;
+
     if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
         DeviceOrientationEvent.requestPermission()
             .then(permission => {
                 if (permission === "granted") {
                     window.addEventListener("deviceorientation", orientationHandler, true);
+                    isSensorInitialized = true;
                     startAnimation();
                 } else {
                     alert("Izin kompas ditolak.");
@@ -456,8 +456,10 @@ function initSensors() {
     } else {
         if ("ondeviceorientationabsolute" in window) {
             window.addEventListener("deviceorientationabsolute", orientationHandler, true);
+            isSensorInitialized = true;
         } else if ("ondeviceorientation" in window) {
             window.addEventListener("deviceorientation", orientationHandler, true);
+            isSensorInitialized = true;
         } else {
             alert("Sensor orientasi tidak didukung pada perangkat ini.");
         }
@@ -509,6 +511,10 @@ function applyManualLocation() {
 }
 
 function startApp() {
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        alert("Perhatian: Fitur kompas & GPS memerlukan koneksi HTTPS agar berjalan optimal di perangkat seluler.");
+    }
+
     initSensors();
 
     if ("geolocation" in navigator) {
