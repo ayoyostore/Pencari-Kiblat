@@ -174,6 +174,73 @@ cursor:pointer;
 
 }
 
+.dial{
+
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:100%;
+border-radius:50%;
+transition:none;
+
+}
+
+.north,
+.east,
+.south,
+.west{
+
+position:absolute;
+font-weight:bold;
+font-size:24px;
+
+}
+
+.north{
+
+left:50%;
+top:10px;
+transform:translateX(-50%);
+color:red;
+
+}
+
+.east{
+
+right:15px;
+top:50%;
+transform:translateY(-50%);
+
+}
+
+.south{
+
+left:50%;
+bottom:10px;
+transform:translateX(-50%);
+
+}
+
+.west{
+
+left:15px;
+top:50%;
+transform:translateY(-50%);
+
+}
+
+.qibla-marker{
+
+position:absolute;
+left:50%;
+top:12px;
+transform:translateX(-50%);
+font-size:30px;
+z-index:20;
+
+}
+
 </style>
 
 </head>
@@ -186,9 +253,23 @@ cursor:pointer;
 
 <div class="compass">
 
-<div class="needle" id="needle"></div>
+    <div id="dial" class="dial">
 
-<div class="center"></div>
+        <div class="north">U</div>
+
+        <div class="east">T</div>
+
+        <div class="south">S</div>
+
+        <div class="west">B</div>
+
+    </div>
+
+    <div id="qiblaMarker" class="qibla-marker">
+        🕋
+    </div>
+
+    <div class="center"></div>
 
 </div>
 
@@ -284,16 +365,16 @@ return (brng+360)%360;
 
 function updateCompass(){
 
-    const needle =
-    document.getElementById("needle");
+    const dial=document.getElementById("dial");
 
-    let angle =
-    qibla-smoothHeading;
+    dial.style.transform=
+        `rotate(${-smoothHeading}deg)`;
 
-    angle=((angle+540)%360)-180;
+    const qiblaMarker=
+        document.getElementById("qiblaMarker");
 
-    needle.style.transform=
-    `rotate(${angle}deg)`;
+    qiblaMarker.style.transform=
+        `translateX(-50%) rotate(${qibla}deg)`;
 
 }
 
@@ -444,17 +525,23 @@ function startCompass(){
 
         // Android
 
-        window.addEventListener(
-            "deviceorientationabsolute",
-            orientationHandler,
-            true
-        );
+        if ("ondeviceorientationabsolute" in window) {
 
-        window.addEventListener(
-            "deviceorientation",
-            orientationHandler,
-            true
-        );
+    window.addEventListener(
+        "deviceorientationabsolute",
+        orientationHandler,
+        true
+    );
+
+} else {
+
+    window.addEventListener(
+        "deviceorientation",
+        orientationHandler,
+        true
+    );
+
+}
 
         if(!animationStarted){
             animationStarted=true;
