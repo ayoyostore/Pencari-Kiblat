@@ -13,7 +13,7 @@
         }
 
         body {
-            background: #eef3f8;
+            background: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,237 +23,167 @@
 
         .card {
             width: 100%;
-            max-width: 780px;
+            max-width: 480px;
             background: white;
             border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.12);
+            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+            text-align: center;
         }
 
         h1 {
-            text-align: center;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-size: 22px;
+        }
+
+        .status-msg {
+            min-height: 24px;
+            font-weight: bold;
+            font-size: 15px;
+            color: #10b981;
             margin-bottom: 20px;
-            color: #222;
-            font-size: 24px;
         }
 
-        .app-layout {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        @media (min-width: 620px) or (orientation: landscape) {
-            .app-layout {
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: flex-start;
-            }
-            .compass-section {
-                flex: 1;
-                display: flex;
-                justify-content: center;
-            }
-            .info-section {
-                flex: 1.2;
-                width: 100%;
-            }
-        }
-
-        .compass {
-            width: 250px;
-            height: 250px;
-            margin: auto;
-            border-radius: 50%;
-            border: 10px solid white;
-            background: #f6f6f6;
-            box-shadow: 0 0 20px rgba(0,0,0,.15);
+        .compass-container {
             position: relative;
-            overflow: hidden;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 24px auto;
         }
 
-        .center {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 16px;
-            height: 16px;
-            margin-left: -8px;
-            margin-top: -8px;
-            background: #2e7d32;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
+        /* Dial Kompas Berputar */
         .dial {
             position: absolute;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            transition: none;
+            background: #f1f5f9;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            transition: transform 0.1s linear;
         }
 
-        .north, .east, .south, .west {
+        .direction {
             position: absolute;
             font-weight: bold;
-            font-size: 20px;
-            z-index: 5;
+            font-size: 18px;
+            color: #475569;
         }
 
-        .north {
-            left: 50%;
-            top: 10px;
-            transform: translateX(-50%);
-            color: #d32f2f;
-        }
+        .north { top: 12px; left: 50%; transform: translateX(-50%); color: #dc2626; }
+        .east { right: 15px; top: 50%; transform: translateY(-50%); }
+        .south { bottom: 12px; left: 50%; transform: translateX(-50%); }
+        .west { left: 15px; top: 50%; transform: translateY(-50%); }
 
-        .east {
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #333;
-        }
-
-        .south {
-            left: 50%;
-            bottom: 10px;
-            transform: translateX(-50%);
-            color: #333;
-        }
-
-        .west {
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #333;
-        }
-
-        /* Container Penanda Kiblat (Jarum Panah + Ikon Ka'bah) */
-        .qibla-pointer-wrapper {
+        /* Penanda Ka'bah Menempel di Dial */
+        .kaaba-marker {
             position: absolute;
-            left: 50%;
             top: 50%;
-            transform-origin: center center;
-            z-index: 30;
+            left: 50%;
+            width: 32px;
+            height: 32px;
+            margin-left: -16px;
+            margin-top: -16px;
+            font-size: 24px;
+            line-height: 32px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Jarum Merah Tetap Ke Atas */
+        .fixed-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 100px;
+            transform: translate(-50%, -100%);
+            z-index: 20;
             pointer-events: none;
         }
 
-        .qibla-pointer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transform: translate(-50%, -100%);
-        }
-
-        .kaaba-icon {
-            font-size: 32px;
-            line-height: 1;
-            filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.3));
-            background: rgba(46, 125, 50, 0.12);
-            border-radius: 50%;
-            padding: 4px;
-            margin-bottom: 2px;
-        }
-
-        .qibla-arrow {
+        .needle-head {
             width: 0;
             height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 50px solid #2e7d32; /* Panah Penunjuk Hijau ke Ka'bah */
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 100px solid #ef4444;
+            border-radius: 4px;
         }
 
-        .info {
-            font-size: 15px;
-            width: 100%;
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 18px;
+            height: 18px;
+            margin-left: -9px;
+            margin-top: -9px;
+            background: #334155;
+            border: 3px solid white;
+            border-radius: 50%;
+            z-index: 30;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        .item {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px dashed #eee;
+        .info-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
 
-        .value {
+        .info-title {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 18px;
             font-weight: bold;
-            color: #1976d2;
+            color: #0f172a;
         }
 
         button {
             width: 100%;
-            margin-top: 12px;
             padding: 12px;
             border: none;
-            background: #1976d2;
+            background: #2563eb;
             color: white;
             font-size: 15px;
             font-weight: bold;
             border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            margin-top: 8px;
         }
 
-        button:hover {
-            background: #1565c0;
-        }
-
-        .btn-secondary {
-            background: #607d8b;
-        }
-
-        .btn-secondary:hover {
-            background: #455a64;
+        .btn-sec {
+            background: #64748b;
         }
 
         .manual-box {
             display: none;
             margin-top: 12px;
-            padding: 14px;
-            background: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            text-align: left;
         }
 
-        .manual-box.active {
-            display: block;
-        }
+        .manual-box.active { display: block; }
 
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 4px;
-        }
-
+        .input-group { margin-bottom: 8px; }
+        .input-group label { font-size: 12px; color: #475569; display: block; }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .calibration-tip {
-            margin-top: 15px;
-            padding: 10px 12px;
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            border-radius: 8px;
-            font-size: 12px;
-            text-align: center;
-            line-height: 1.4;
         }
     </style>
 </head>
@@ -261,86 +191,61 @@
 
 <div class="card">
     <h1>Pencari Kiblat</h1>
+    <div id="statusMsg" class="status-msg"></div>
 
-    <div class="app-layout">
-        <div class="compass-section">
-            <div class="compass">
-                <div id="dial" class="dial">
-                    <div class="north">U</div>
-                    <div class="east">T</div>
-                    <div class="south">S</div>
-                    <div class="west">B</div>
-
-                    <!-- Penanda Kiblat dengan Presisi Panah & Ka'bah -->
-                    <div id="qiblaWrapper" class="qibla-pointer-wrapper">
-                        <div class="qibla-pointer">
-                            <div class="kaaba-icon" role="img" aria-label="Ka'bah">🕋</div>
-                            <div class="qibla-arrow"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="center"></div>
-            </div>
+    <div class="compass-container">
+        <!-- Dial Kompas (Berputar) -->
+        <div id="dial" class="dial">
+            <div class="direction north">U</div>
+            <div class="direction east">T</div>
+            <div class="direction south">S</div>
+            <div class="direction west">B</div>
+            
+            <!-- Ka'bah Menempel Pada Ruang Dial -->
+            <div id="kaabaMarker" class="kaaba-marker">🕋</div>
         </div>
 
-        <div class="info-section">
-            <div class="info">
-                <div class="item">
-                    <span>Latitude</span>
-                    <span id="lat" class="value">-</span>
-                </div>
-                <div class="item">
-                    <span>Longitude</span>
-                    <span id="lng" class="value">-</span>
-                </div>
-                <div class="item">
-                    <span>Heading (Arah Hadap)</span>
-                    <span id="heading" class="value">0°</span>
-                </div>
-                <div class="item">
-                    <span>Arah Kiblat</span>
-                    <span id="bearing" class="value">-</span>
-                </div>
-            </div>
-
-            <button id="btnStart" onclick="startApp()">
-                📍 Ambil Lokasi GPS & Aktifkan Kompas
-            </button>
-
-            <button type="button" class="btn-secondary" onclick="toggleManualInput()">
-                ⚙️ Input Lokasi Manual
-            </button>
-
-            <div id="manualBox" class="manual-box">
-                <div class="input-group">
-                    <label for="citySelect">Pilih Kota Populer:</label>
-                    <select id="citySelect" onchange="onCityChange()">
-                        <option value="">-- Pilih Kota --</option>
-                        <option value="-6.2088,106.8456">Jakarta (-6.2088, 106.8456)</option>
-                        <option value="-7.2575,112.7521">Surabaya (-7.2575, 112.7521)</option>
-                        <option value="-6.9175,107.6191">Bandung (-6.9175, 107.6191)</option>
-                        <option value="3.5952,98.6722">Medan (3.5952, 98.6722)</option>
-                        <option value="-5.1477,119.4327">Makassar (-5.1477, 119.4327)</option>
-                        <option value="-6.9667,110.4167">Semarang (-6.9667, 110.4167)</option>
-                        <option value="-7.7956,110.3695">Yogyakarta (-7.7956, 110.3695)</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="inputLat">Latitude (Garis Lintang):</label>
-                    <input type="number" id="inputLat" step="any" placeholder="contoh: -7.2575">
-                </div>
-                <div class="input-group">
-                    <label for="inputLng">Longitude (Garis Bujur):</label>
-                    <input type="number" id="inputLng" step="any" placeholder="contoh: 112.7521">
-                </div>
-                <button type="button" onclick="applyManualLocation()">Terapkan Lokasi Manual</button>
-            </div>
-
-            <div class="calibration-tip">
-                💡 <strong>Tips Kalibrasi Kompas:</strong> Jika arah terasa melenceng, layangkan HP Anda membentuk pola <strong>angka 8</strong> di udara beberapa kali.
-            </div>
+        <!-- Jarum Merah (Statis Menunjuk Ke Atas) -->
+        <div class="fixed-needle">
+            <div class="needle-head"></div>
         </div>
+        <div class="center-dot"></div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Arah Kiblat</div>
+        <div id="bearing" class="info-value">--°</div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Lokasi Anda</div>
+        <div id="locationText" class="info-value">-</div>
+    </div>
+
+    <button onclick="startApp()">📍 Aktifkan Kompas & GPS</button>
+    <button class="btn-sec" onclick="toggleManual()">⚙️ Input Lokasi Manual</button>
+
+    <div id="manualBox" class="manual-box">
+        <div class="input-group">
+            <label>Pilih Kota:</label>
+            <select id="citySelect" onchange="onCityChange()">
+                <option value="">-- Pilih Kota --</option>
+                <option value="-6.2088,106.8456">Jakarta</option>
+                <option value="-7.2575,112.7521">Surabaya</option>
+                <option value="-6.9175,107.6191">Bandung</option>
+                <option value="3.5952,98.6722">Medan</option>
+                <option value="-5.1477,119.4327">Makassar</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Latitude:</label>
+            <input type="number" id="inputLat" step="any">
+        </div>
+        <div class="input-group">
+            <label>Longitude:</label>
+            <input type="number" id="inputLng" step="any">
+        </div>
+        <button onclick="applyManual()">Terapkan Lokasi</button>
     </div>
 </div>
 
@@ -348,17 +253,13 @@
 const kaabaLat = 21.422487;
 const kaabaLng = 39.826206;
 
-let qibla = 0;
-let targetHeading = 0;
-let smoothHeading = 0;
-let animationStarted = false;
-let isSensorInitialized = false;
-const DEAD_ZONE = 0.5;
+let qiblaBearing = 0;
+let heading = 0;
 
-function rad(x) { return x * Math.PI / 180; }
-function deg(x) { return x * 180 / Math.PI; }
+function rad(deg) { return deg * Math.PI / 180; }
+function deg(rad) { return rad * 180 / Math.PI; }
 
-function qiblaBearing(lat, lng) {
+function calculateQibla(lat, lng) {
     let phi1 = rad(lat);
     let phi2 = rad(kaabaLat);
     let dlambda = rad(kaabaLng - lng);
@@ -368,119 +269,73 @@ function qiblaBearing(lat, lng) {
     return (brng + 360) % 360;
 }
 
-function updateCompass() {
+function updateCompassUI() {
     const dial = document.getElementById("dial");
-    dial.style.transform = `rotate(${-smoothHeading}deg)`;
+    // Dial berputar agar posisi Utara dan Ka'bah sesuai terhadap hadap HP
+    const rotation = (360 - heading) % 360;
+    dial.style.transform = `rotate(${rotation}deg)`;
 
-    const qiblaWrapper = document.getElementById("qiblaWrapper");
-    qiblaWrapper.style.transform = `rotate(${qibla}deg)`;
-}
+    // Posisikan ikon Ka'bah tepat pada sudut azimuth Kiblat di lingkaran dial (radius 95px)
+    const kaabaMarker = document.getElementById("kaabaMarker");
+    const angleRad = rad(qiblaBearing - 90); 
+    const radius = 95;
+    const x = Math.cos(angleRad) * radius;
+    const y = Math.sin(angleRad) * radius;
+    
+    // Rotasi balik ikon Ka'bah agar posisinya selalu tegak lurus
+    kaabaMarker.style.transform = `translate(${x}px, ${y}px) rotate(${-rotation}deg)`;
 
-function getScreenOrientation() {
-    if (screen.orientation && typeof screen.orientation.angle === 'number') {
-        return screen.orientation.angle;
-    }
-    if (typeof window.orientation === 'number') {
-        return window.orientation;
-    }
-    return 0;
-}
-
-function orientationHandler(event) {
-    let heading = null;
-    let isIOS = false;
-
-    if (typeof event.webkitCompassHeading === "number") {
-        heading = event.webkitCompassHeading;
-        isIOS = true;
-    } 
-    else if (event.alpha !== null) {
-        heading = 360 - event.alpha;
-    }
-
-    if (heading === null) return;
-
-    if (!isIOS) {
-        let screenAngle = getScreenOrientation();
-        heading = (heading + screenAngle + 360) % 360;
-    }
-
-    targetHeading = heading;
-    document.getElementById("heading").innerHTML = targetHeading.toFixed(1) + "°";
-}
-
-function shortestAngle(current, target) {
-    let diff = target - current;
-    diff = ((diff + 540) % 360) - 180;
-    return diff;
-}
-
-function animateCompass() {
-    let diff = shortestAngle(smoothHeading, targetHeading);
-
-    if (Math.abs(diff) > DEAD_ZONE) {
-        let alpha;
-        if (Math.abs(diff) > 60) alpha = 0.28;
-        else if (Math.abs(diff) > 25) alpha = 0.18;
-        else if (Math.abs(diff) > 10) alpha = 0.12;
-        else alpha = 0.05;
-
-        smoothHeading += diff * alpha;
-        smoothHeading = (smoothHeading + 360) % 360;
-    }
-
-    updateCompass();
-    requestAnimationFrame(animateCompass);
-}
-
-function initSensors() {
-    if (isSensorInitialized) return;
-
-    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission()
-            .then(permission => {
-                if (permission === "granted") {
-                    window.addEventListener("deviceorientation", orientationHandler, true);
-                    isSensorInitialized = true;
-                    startAnimation();
-                } else {
-                    alert("Izin kompas ditolak.");
-                }
-            })
-            .catch(console.error);
+    // Cek apakah pengguna sudah menghadap Kiblat (toleransi ±3 derajat)
+    const diff = Math.abs((heading - qiblaBearing + 540) % 360 - 180);
+    const statusMsg = document.getElementById("statusMsg");
+    if (diff < 3 && qiblaBearing !== 0) {
+        statusMsg.innerText = "Anda telah mencapai arah Kiblat!";
     } else {
-        if ("ondeviceorientationabsolute" in window) {
-            window.addEventListener("deviceorientationabsolute", orientationHandler, true);
-            isSensorInitialized = true;
-        } else if ("ondeviceorientation" in window) {
-            window.addEventListener("deviceorientation", orientationHandler, true);
-            isSensorInitialized = true;
-        } else {
-            alert("Sensor orientasi tidak didukung pada perangkat ini.");
-        }
-        startAnimation();
+        statusMsg.innerText = "";
     }
 }
 
-function startAnimation() {
-    if (!animationStarted) {
-        animationStarted = true;
-        animateCompass();
+function handleOrientation(e) {
+    if (typeof e.webkitCompassHeading === "number") {
+        heading = e.webkitCompassHeading; // iOS
+    } else if (e.alpha !== null) {
+        heading = 360 - e.alpha; // Android
+    }
+    updateCompassUI();
+}
+
+function startSensors() {
+    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission().then(res => {
+            if (res === "granted") {
+                window.addEventListener("deviceorientation", handleOrientation, true);
+            }
+        });
+    } else {
+        window.addEventListener("deviceorientationabsolute", handleOrientation, true) ||
+        window.addEventListener("deviceorientation", handleOrientation, true);
     }
 }
 
-function setLocationData(lat, lng) {
-    document.getElementById("lat").innerHTML = parseFloat(lat).toFixed(6);
-    document.getElementById("lng").innerHTML = parseFloat(lng).toFixed(6);
-
-    qibla = qiblaBearing(lat, lng);
-    document.getElementById("bearing").innerHTML = qibla.toFixed(2) + "°";
-    updateCompass();
+function setLocation(lat, lng) {
+    document.getElementById("locationText").innerText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    qiblaBearing = calculateQibla(lat, lng);
+    document.getElementById("bearing").innerText = `${qiblaBearing.toFixed(1)}°`;
+    updateCompassUI();
 }
 
-function toggleManualInput() {
-    const box = document.getElementById("manualBox");
-    box.classList.toggle("active");
+function startApp() {
+    startSensors();
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            pos => setLocation(pos.coords.latitude, pos.coords.longitude),
+            err => alert("Gagal mengambil lokasi GPS: " + err.message)
+        );
+    }
+}
+
+function toggleManual() {
+    document.getElementById("manualBox").classList.toggle("active");
 }
 
 function onCityChange() {
@@ -492,51 +347,12 @@ function onCityChange() {
     }
 }
 
-function applyManualLocation() {
+function applyManual() {
     const lat = parseFloat(document.getElementById("inputLat").value);
     const lng = parseFloat(document.getElementById("inputLng").value);
-
-    if (isNaN(lat) || isNaN(lng)) {
-        alert("Masukkan nilai Latitude dan Longitude yang valid.");
-        return;
-    }
-
-    initSensors();
-    setLocationData(lat, lng);
-    alert("Lokasi manual berhasil diterapkan!");
-}
-
-function startApp() {
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-        alert("Perhatian: Fitur kompas & GPS memerlukan koneksi HTTPS agar berjalan optimal di perangkat seluler.");
-    }
-
-    initSensors();
-
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                setLocationData(pos.coords.latitude, pos.coords.longitude);
-            },
-            (err) => {
-                alert("Gagal mengambil GPS: " + err.message + ". Mengalihkan ke Input Lokasi Manual.");
-                const box = document.getElementById("manualBox");
-                if (!box.classList.contains("active")) {
-                    box.classList.add("active");
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    } else {
-        alert("Geolokasi tidak didukung. Silakan gunakan Input Lokasi Manual.");
-        const box = document.getElementById("manualBox");
-        if (!box.classList.contains("active")) {
-            box.classList.add("active");
-        }
+    if (!isNaN(lat) && !isNaN(lng)) {
+        startSensors();
+        setLocation(lat, lng);
     }
 }
 </script>
