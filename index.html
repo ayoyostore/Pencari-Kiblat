@@ -23,10 +23,10 @@
 
         .card {
             width: 100%;
-            max-width: 420px;
+            max-width: 780px;
             background: white;
             border-radius: 20px;
-            padding: 20px;
+            padding: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,.12);
         }
 
@@ -34,11 +34,37 @@
             text-align: center;
             margin-bottom: 20px;
             color: #222;
+            font-size: 24px;
+        }
+
+        .app-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Penanganan Mode Lanskap & Layar Lebar */
+        @media (min-width: 620px) or (orientation: landscape) {
+            .app-layout {
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+            }
+            .compass-section {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+            .info-section {
+                flex: 1.2;
+                width: 100%;
+            }
         }
 
         .compass {
-            width: 280px;
-            height: 280px;
+            width: 250px;
+            height: 250px;
             margin: auto;
             border-radius: 50%;
             border: 10px solid white;
@@ -74,14 +100,14 @@
         .north, .east, .south, .west {
             position: absolute;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .north {
             left: 50%;
             top: 10px;
             transform: translateX(-50%);
-            color: red;
+            color: #d32f2f;
         }
 
         .east {
@@ -106,40 +132,99 @@
             position: absolute;
             left: 50%;
             top: 50%;
-            font-size: 30px;
+            font-size: 28px;
             z-index: 20;
             transform-origin: center center;
         }
 
         .info {
-            margin-top: 25px;
-            font-size: 18px;
+            font-size: 15px;
+            width: 100%;
         }
 
         .item {
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
+            margin-top: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #eee;
         }
 
         .value {
             font-weight: bold;
+            color: #1976d2;
         }
 
         button {
             width: 100%;
-            margin-top: 25px;
-            padding: 14px;
+            margin-top: 12px;
+            padding: 12px;
             border: none;
             background: #1976d2;
             color: white;
-            font-size: 18px;
-            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
         button:hover {
             background: #1565c0;
+        }
+
+        .btn-secondary {
+            background: #607d8b;
+        }
+
+        .btn-secondary:hover {
+            background: #455a64;
+        }
+
+        /* Kotak Input Manual */
+        .manual-box {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .manual-box.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Panduan Kalibrasi */
+        .calibration-tip {
+            margin-top: 15px;
+            padding: 10px 12px;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -148,39 +233,79 @@
 <div class="card">
     <h1>Pencari Kiblat</h1>
 
-    <div class="compass">
-        <div id="dial" class="dial">
-            <div class="north">U</div>
-            <div class="east">T</div>
-            <div class="south">S</div>
-            <div class="west">B</div>
+    <div class="app-layout">
+        <div class="compass-section">
+            <div class="compass">
+                <div id="dial" class="dial">
+                    <div class="north">U</div>
+                    <div class="east">T</div>
+                    <div class="south">S</div>
+                    <div class="west">B</div>
+                </div>
+                <div id="qiblaMarker" class="qibla-marker">🕋</div>
+                <div class="center"></div>
+            </div>
         </div>
-        <div id="qiblaMarker" class="qibla-marker">🕋</div>
-        <div class="center"></div>
-    </div>
 
-    <div class="info">
-        <div class="item">
-            <span>Latitude</span>
-            <span id="lat" class="value">-</span>
-        </div>
-        <div class="item">
-            <span>Longitude</span>
-            <span id="lng" class="value">-</span>
-        </div>
-        <div class="item">
-            <span>Heading</span>
-            <span id="heading" class="value">0°</span>
-        </div>
-        <div class="item">
-            <span>Arah Kiblat</span>
-            <span id="bearing" class="value">-</span>
+        <div class="info-section">
+            <div class="info">
+                <div class="item">
+                    <span>Latitude</span>
+                    <span id="lat" class="value">-</span>
+                </div>
+                <div class="item">
+                    <span>Longitude</span>
+                    <span id="lng" class="value">-</span>
+                </div>
+                <div class="item">
+                    <span>Heading (Arah Hadap)</span>
+                    <span id="heading" class="value">0°</span>
+                </div>
+                <div class="item">
+                    <span>Arah Kiblat</span>
+                    <span id="bearing" class="value">-</span>
+                </div>
+            </div>
+
+            <button id="btnStart" onclick="startApp()">
+                📍 Ambil Lokasi GPS & Aktifkan Kompas
+            </button>
+
+            <button type="button" class="btn-secondary" onclick="toggleManualInput()">
+                ⚙️ Input Lokasi Manual
+            </button>
+
+            <!-- Form Lokasi Manual -->
+            <div id="manualBox" class="manual-box">
+                <div class="input-group">
+                    <label for="citySelect">Pilih Kota Populer:</label>
+                    <select id="citySelect" onchange="onCityChange()">
+                        <option value="">-- Pilih Kota --</option>
+                        <option value="-6.2088,106.8456">Jakarta (-6.2088, 106.8456)</option>
+                        <option value="-7.2575,112.7521">Surabaya (-7.2575, 112.7521)</option>
+                        <option value="-6.9175,107.6191">Bandung (-6.9175, 107.6191)</option>
+                        <option value="3.5952,98.6722">Medan (3.5952, 98.6722)</option>
+                        <option value="-5.1477,119.4327">Makassar (-5.1477, 119.4327)</option>
+                        <option value="-6.9667,110.4167">Semarang (-6.9667, 110.4167)</option>
+                        <option value="-7.7956,110.3695">Yogyakarta (-7.7956, 110.3695)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="inputLat">Latitude (Garis Lintang):</label>
+                    <input type="number" id="inputLat" step="any" placeholder="contoh: -7.2575">
+                </div>
+                <div class="input-group">
+                    <label for="inputLng">Longitude (Garis Bujur):</label>
+                    <input type="number" id="inputLng" step="any" placeholder="contoh: 112.7521">
+                </div>
+                <button type="button" onclick="applyManualLocation()">Terapkan Lokasi Manual</button>
+            </div>
+
+            <div class="calibration-tip">
+                💡 <strong>Tips Kalibrasi Kompas:</strong> Jika arah terasa melenceng, layangkan HP Anda membentuk pola <strong>angka 8</strong> di udara beberapa kali.
+            </div>
         </div>
     </div>
-
-    <button id="btnStart" onclick="startApp()">
-        Ambil Lokasi & Aktifkan Kompas
-    </button>
 </div>
 
 <script>
@@ -212,7 +337,7 @@ function updateCompass() {
 
     const qiblaMarker = document.getElementById("qiblaMarker");
     const angle = qibla - smoothHeading;
-    qiblaMarker.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-120px)`;
+    qiblaMarker.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-105px)`;
 }
 
 function getScreenOrientation() {
@@ -272,7 +397,6 @@ function animateCompass() {
 }
 
 function initSensors() {
-    // Izin iOS Safari (Dipanggil langsung dari event klik tombol)
     if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
         DeviceOrientationEvent.requestPermission()
             .then(permission => {
@@ -285,13 +409,12 @@ function initSensors() {
             })
             .catch(console.error);
     } else {
-        // Android / Browser standar
         if ("ondeviceorientationabsolute" in window) {
             window.addEventListener("deviceorientationabsolute", orientationHandler, true);
         } else if ("ondeviceorientation" in window) {
             window.addEventListener("deviceorientation", orientationHandler, true);
         } else {
-            alert("Sensor orientasi tidak didukung pada browser/perangkat ini.");
+            alert("Sensor orientasi tidak didukung pada perangkat ini.");
         }
         startAnimation();
     }
@@ -304,25 +427,56 @@ function startAnimation() {
     }
 }
 
+function setLocationData(lat, lng) {
+    document.getElementById("lat").innerHTML = parseFloat(lat).toFixed(6);
+    document.getElementById("lng").innerHTML = parseFloat(lng).toFixed(6);
+
+    qibla = qiblaBearing(lat, lng);
+    document.getElementById("bearing").innerHTML = qibla.toFixed(2) + "°";
+}
+
+function toggleManualInput() {
+    const box = document.getElementById("manualBox");
+    box.classList.toggle("active");
+}
+
+function onCityChange() {
+    const val = document.getElementById("citySelect").value;
+    if (val) {
+        const [lat, lng] = val.split(",");
+        document.getElementById("inputLat").value = lat;
+        document.getElementById("inputLng").value = lng;
+    }
+}
+
+function applyManualLocation() {
+    const lat = parseFloat(document.getElementById("inputLat").value);
+    const lng = parseFloat(document.getElementById("inputLng").value);
+
+    if (isNaN(lat) || isNaN(lng)) {
+        alert("Masukkan nilai Latitude dan Longitude yang valid.");
+        return;
+    }
+
+    initSensors();
+    setLocationData(lat, lng);
+    alert("Lokasi manual berhasil diterapkan!");
+}
+
 function startApp() {
-    // 1. Inisialisasi sensor kompas secara sinkron dari gesture klik tombol
     initSensors();
 
-    // 2. Minta posisi GPS
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
-                let lat = pos.coords.latitude;
-                let lng = pos.coords.longitude;
-
-                document.getElementById("lat").innerHTML = lat.toFixed(6);
-                document.getElementById("lng").innerHTML = lng.toFixed(6);
-
-                qibla = qiblaBearing(lat, lng);
-                document.getElementById("bearing").innerHTML = qibla.toFixed(2) + "°";
+                setLocationData(pos.coords.latitude, pos.coords.longitude);
             },
             (err) => {
-                alert("Gagal mendapatkan lokasi GPS: " + err.message);
+                alert("Gagal mengambil GPS: " + err.message + ". Mengalihkan ke Input Lokasi Manual.");
+                const box = document.getElementById("manualBox");
+                if (!box.classList.contains("active")) {
+                    box.classList.add("active");
+                }
             },
             {
                 enableHighAccuracy: true,
@@ -331,7 +485,11 @@ function startApp() {
             }
         );
     } else {
-        alert("Geolokasi tidak didukung pada browser ini.");
+        alert("Geolokasi tidak didukung. Silakan gunakan Input Lokasi Manual.");
+        const box = document.getElementById("manualBox");
+        if (!box.classList.contains("active")) {
+            box.classList.add("active");
+        }
     }
 }
 </script>
