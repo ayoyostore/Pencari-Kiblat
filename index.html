@@ -233,11 +233,16 @@ transform:translateY(-50%);
 .qibla-marker{
 
 position:absolute;
+
 left:50%;
-top:12px;
-transform:translateX(-50%);
+
+top:50%;
+
 font-size:30px;
+
 z-index:20;
+
+transform-origin:center center;
 
 }
 
@@ -365,16 +370,18 @@ return (brng+360)%360;
 
 function updateCompass(){
 
-    const dial=document.getElementById("dial");
+    // Putar dial kompas mengikuti arah utara
+    const dial = document.getElementById("dial");
+    dial.style.transform = `rotate(${-smoothHeading}deg)`;
 
-    dial.style.transform=
-        `rotate(${-smoothHeading}deg)`;
+    // Posisi penanda kiblat
+    const qiblaMarker = document.getElementById("qiblaMarker");
 
-    const qiblaMarker=
-        document.getElementById("qiblaMarker");
+    // Sudut relatif terhadap arah hadap pengguna
+    const angle = qibla - smoothHeading;
 
-    qiblaMarker.style.transform=
-        `translateX(-50%) rotate(${qibla}deg)`;
+    qiblaMarker.style.transform =
+        `translate(-50%, -50%) rotate(${angle}deg) translateY(-120px)`;
 
 }
 
