@@ -1,565 +1,339 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Pencari Kiblat</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-
-background:#eef3f8;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-min-height:100vh;
-
-padding:20px;
-
-}
-
-.card{
-
-width:100%;
-
-max-width:420px;
-
-background:white;
-
-border-radius:20px;
-
-padding:20px;
-
-box-shadow:0 10px 25px rgba(0,0,0,.12);
-
-}
-
-h1{
-
-text-align:center;
-
-margin-bottom:20px;
-
-color:#222;
-
-}
-
-.compass{
-
-width:280px;
-
-height:280px;
-
-margin:auto;
-
-border-radius:50%;
-
-border:10px solid white;
-
-background:#f6f6f6;
-
-box-shadow:0 0 20px rgba(0,0,0,.15);
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.center{
-
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-width:18px;
-
-height:18px;
-
-margin-left:-9px;
-
-margin-top:-9px;
-
-background:#333;
-
-border-radius:50%;
-
-z-index:100;
-
-}
-
-.needle{
-
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-width:6px;
-
-height:120px;
-
-margin-left:-3px;
-
-margin-top:-120px;
-
-background:red;
-
-transform-origin:center bottom;
-
-border-radius:20px;
-
-}
-
-.info{
-
-margin-top:25px;
-
-font-size:18px;
-
-}
-
-.item{
-
-display:flex;
-
-justify-content:space-between;
-
-margin-top:15px;
-
-}
-
-.value{
-
-font-weight:bold;
-
-}
-
-button{
-
-width:100%;
-
-margin-top:25px;
-
-padding:14px;
-
-border:none;
-
-background:#1976d2;
-
-color:white;
-
-font-size:18px;
-
-border-radius:12px;
-
-cursor:pointer;
-
-}
-
-.dial{
-
-position:absolute;
-left:0;
-top:0;
-width:100%;
-height:100%;
-border-radius:50%;
-transition:none;
-
-}
-
-.north,
-.east,
-.south,
-.west{
-
-position:absolute;
-font-weight:bold;
-font-size:24px;
-
-}
-
-.north{
-
-left:50%;
-top:10px;
-transform:translateX(-50%);
-color:red;
-
-}
-
-.east{
-
-right:15px;
-top:50%;
-transform:translateY(-50%);
-
-}
-
-.south{
-
-left:50%;
-bottom:10px;
-transform:translateX(-50%);
-
-}
-
-.west{
-
-left:15px;
-top:50%;
-transform:translateY(-50%);
-
-}
-
-.qibla-marker{
-
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-font-size:30px;
-
-z-index:20;
-
-transform-origin:center center;
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencari Kiblat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #eef3f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.12);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .compass {
+            width: 280px;
+            height: 280px;
+            margin: auto;
+            border-radius: 50%;
+            border: 10px solid white;
+            background: #f6f6f6;
+            box-shadow: 0 0 20px rgba(0,0,0,.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            margin-left: -9px;
+            margin-top: -9px;
+            background: #333;
+            border-radius: 50%;
+            z-index: 100;
+        }
+
+        .dial {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: none;
+        }
+
+        .north, .east, .south, .west {
+            position: absolute;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .north {
+            left: 50%;
+            top: 10px;
+            transform: translateX(-50%);
+            color: red;
+        }
+
+        .east {
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .south {
+            left: 50%;
+            bottom: 10px;
+            transform: translateX(-50%);
+        }
+
+        .west {
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .qibla-marker {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 30px;
+            z-index: 20;
+            transform-origin: center center;
+        }
+
+        .info {
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .value {
+            font-weight: bold;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            background: #1976d2;
+            color: white;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1565c0;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="card">
+    <h1>Pencari Kiblat</h1>
 
-<h1>Pencari Kiblat</h1>
-
-<div class="compass">
-
-    <div id="dial" class="dial">
-
-        <div class="north">U</div>
-
-        <div class="east">T</div>
-
-        <div class="south">S</div>
-
-        <div class="west">B</div>
-
+    <div class="compass">
+        <div id="dial" class="dial">
+            <div class="north">U</div>
+            <div class="east">T</div>
+            <div class="south">S</div>
+            <div class="west">B</div>
+        </div>
+        <div id="qiblaMarker" class="qibla-marker">🕋</div>
+        <div class="center"></div>
     </div>
 
-    <div id="qiblaMarker" class="qibla-marker">
-        🕋
+    <div class="info">
+        <div class="item">
+            <span>Latitude</span>
+            <span id="lat" class="value">-</span>
+        </div>
+        <div class="item">
+            <span>Longitude</span>
+            <span id="lng" class="value">-</span>
+        </div>
+        <div class="item">
+            <span>Heading</span>
+            <span id="heading" class="value">0°</span>
+        </div>
+        <div class="item">
+            <span>Arah Kiblat</span>
+            <span id="bearing" class="value">-</span>
+        </div>
     </div>
 
-    <div class="center"></div>
-
-</div>
-
-<div class="info">
-
-<div class="item">
-
-<span>Latitude</span>
-
-<span id="lat" class="value">-</span>
-
-</div>
-
-<div class="item">
-
-<span>Longitude</span>
-
-<span id="lng" class="value">-</span>
-
-</div>
-
-<div class="item">
-    
-<span>Heading</span>
-    
-<span id="heading" class="value">0°</span>
-    
-</div>
-
-<div class="item">
-
-<span>Arah Kiblat</span>
-
-<span id="bearing" class="value">-</span>
-
-</div>
-
-</div>
-
-<button onclick="getLocation()">
-
-Ambil Lokasi
-
-</button>
-
+    <button id="btnStart" onclick="startApp()">
+        Ambil Lokasi & Aktifkan Kompas
+    </button>
 </div>
 
 <script>
+const kaabaLat = 21.422487;
+const kaabaLng = 39.826206;
 
-const kaabaLat=21.422487;
-
-const kaabaLng=39.826206;
-    
 let qibla = 0;
-
 let targetHeading = 0;
-    
 let smoothHeading = 0;
-
 let animationStarted = false;
-
 const DEAD_ZONE = 0.5;
 
-function rad(x){
+function rad(x) { return x * Math.PI / 180; }
+function deg(x) { return x * 180 / Math.PI; }
 
-return x*Math.PI/180;
-
+function qiblaBearing(lat, lng) {
+    let phi1 = rad(lat);
+    let phi2 = rad(kaabaLat);
+    let dlambda = rad(kaabaLng - lng);
+    let y = Math.sin(dlambda);
+    let x = Math.cos(phi1) * Math.tan(phi2) - Math.sin(phi1) * Math.cos(dlambda);
+    let brng = deg(Math.atan2(y, x));
+    return (brng + 360) % 360;
 }
 
-function deg(x){
-
-return x*180/Math.PI;
-
-}
-
-function qiblaBearing(lat,lng){
-
-let phi1=rad(lat);
-
-let phi2=rad(kaabaLat);
-
-let dlambda=rad(kaabaLng-lng);
-
-let y=Math.sin(dlambda);
-
-let x=Math.cos(phi1)*Math.tan(phi2)-Math.sin(phi1)*Math.cos(dlambda);
-
-let brng=deg(Math.atan2(y,x));
-
-return (brng+360)%360;
-
-}
-
-function updateCompass(){
-
-    // Putar dial kompas mengikuti arah utara
+function updateCompass() {
     const dial = document.getElementById("dial");
     dial.style.transform = `rotate(${-smoothHeading}deg)`;
 
-    // Posisi penanda kiblat
     const qiblaMarker = document.getElementById("qiblaMarker");
-
-    // Sudut relatif terhadap arah hadap pengguna
     const angle = qibla - smoothHeading;
-
-    qiblaMarker.style.transform =
-        `translate(-50%, -50%) rotate(${angle}deg) translateY(-120px)`;
-
+    qiblaMarker.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-120px)`;
 }
 
-function success(pos){
-
-    let lat = pos.coords.latitude;
-    let lng = pos.coords.longitude;
-
-    document.getElementById("lat").innerHTML = lat.toFixed(6);
-    document.getElementById("lng").innerHTML = lng.toFixed(6);
-
-    qibla = qiblaBearing(lat,lng);
-
-    document.getElementById("bearing").innerHTML =
-        qibla.toFixed(2)+"°";
-    startCompass();
-
-}
-
-function error(){
-
-alert("Lokasi tidak tersedia");
-
-}
-
-function orientationHandler(event){
-
-    let newHeading = null;
-
-    // Safari / iPhone
-    if(typeof event.webkitCompassHeading === "number"){
-
-        newHeading = event.webkitCompassHeading;
-
+function getScreenOrientation() {
+    if (screen.orientation && typeof screen.orientation.angle === 'number') {
+        return screen.orientation.angle;
     }
-    // Android
-    else if(event.alpha !== null){
+    if (typeof window.orientation === 'number') {
+        return window.orientation;
+    }
+    return 0;
+}
 
-        newHeading = 360 - event.alpha;
+function orientationHandler(event) {
+    let heading = null;
 
+    // iOS Safari
+    if (typeof event.webkitCompassHeading === "number") {
+        heading = event.webkitCompassHeading;
+    } 
+    // Android / Browser Standar
+    else if (event.alpha !== null) {
+        heading = 360 - event.alpha;
     }
 
-    if(newHeading === null) return;
+    if (heading === null) return;
 
-    newHeading = (newHeading + 360) % 360;
+    // Penyesuaian rotasi layar (Portrait / Landscape)
+    let screenAngle = getScreenOrientation();
+    heading = (heading + screenAngle + 360) % 360;
 
-    targetHeading = newHeading;
-
-document.getElementById("heading").innerHTML =
-    targetHeading.toFixed(1) + "°";
+    targetHeading = heading;
+    document.getElementById("heading").innerHTML = targetHeading.toFixed(1) + "°";
 }
 
-function shortestAngle(current,target){
-
-    let diff = target-current;
-
-    diff = ((diff+540)%360)-180;
-
+function shortestAngle(current, target) {
+    let diff = target - current;
+    diff = ((diff + 540) % 360) - 180;
     return diff;
-
 }
 
-function animateCompass(){
+function animateCompass() {
+    let diff = shortestAngle(smoothHeading, targetHeading);
 
-    let diff = shortestAngle(
-        smoothHeading,
-        targetHeading
-    );
-
-    if(Math.abs(diff)>DEAD_ZONE){
-
+    if (Math.abs(diff) > DEAD_ZONE) {
         let alpha;
+        if (Math.abs(diff) > 60) alpha = 0.28;
+        else if (Math.abs(diff) > 25) alpha = 0.18;
+        else if (Math.abs(diff) > 10) alpha = 0.12;
+        else alpha = 0.05;
 
-        if(Math.abs(diff)>60){
-
-    alpha=0.28;
-
-}else if(Math.abs(diff)>25){
-
-    alpha=0.18;
-
-}else if(Math.abs(diff)>10){
-
-    alpha=0.12;
-
-}else{
-
-    alpha=0.05;
-
-}
-
-        smoothHeading += diff*alpha;
-
-        smoothHeading =
-        (smoothHeading+360)%360;
-
+        smoothHeading += diff * alpha;
+        smoothHeading = (smoothHeading + 360) % 360;
     }
 
     updateCompass();
-
-    requestAnimationFrame(
-        animateCompass
-    );
-
+    requestAnimationFrame(animateCompass);
 }
 
-function getLocation(){
-
-    navigator.geolocation.getCurrentPosition(
-        success,
-        error,
-        {
-            enableHighAccuracy:true,
-            timeout:10000,
-            maximumAge:0
-        }
-    );
-
-}
-    
-function startCompass(){
-
-    if(typeof DeviceOrientationEvent !== "undefined" &&
-       typeof DeviceOrientationEvent.requestPermission === "function"){
-
-        // iPhone / iPad
+function initSensors() {
+    // Izin iOS Safari (Dipanggil langsung dari event klik tombol)
+    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
         DeviceOrientationEvent.requestPermission()
-        .then(permission=>{
-
-            if(permission==="granted"){
-
-                window.addEventListener(
-                    "deviceorientation",
-                    orientationHandler,
-                    true
-                );
-
-                if(!animationStarted){
-                    animationStarted=true;
-                    animateCompass();
+            .then(permission => {
+                if (permission === "granted") {
+                    window.addEventListener("deviceorientation", orientationHandler, true);
+                    startAnimation();
+                } else {
+                    alert("Izin kompas ditolak.");
                 }
-
-            }
-
-        });
-
-    }else{
-
-        // Android
-
+            })
+            .catch(console.error);
+    } else {
+        // Android / Browser standar
         if ("ondeviceorientationabsolute" in window) {
-
-    window.addEventListener(
-        "deviceorientationabsolute",
-        orientationHandler,
-        true
-    );
-
-} else {
-
-    window.addEventListener(
-        "deviceorientation",
-        orientationHandler,
-        true
-    );
-
-}
-
-        if(!animationStarted){
-            animationStarted=true;
-            animateCompass();
+            window.addEventListener("deviceorientationabsolute", orientationHandler, true);
+        } else if ("ondeviceorientation" in window) {
+            window.addEventListener("deviceorientation", orientationHandler, true);
+        } else {
+            alert("Sensor orientasi tidak didukung pada browser/perangkat ini.");
         }
-
+        startAnimation();
     }
-
 }
-  
 
+function startAnimation() {
+    if (!animationStarted) {
+        animationStarted = true;
+        animateCompass();
+    }
+}
+
+function startApp() {
+    // 1. Inisialisasi sensor kompas secara sinkron dari gesture klik tombol
+    initSensors();
+
+    // 2. Minta posisi GPS
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                let lat = pos.coords.latitude;
+                let lng = pos.coords.longitude;
+
+                document.getElementById("lat").innerHTML = lat.toFixed(6);
+                document.getElementById("lng").innerHTML = lng.toFixed(6);
+
+                qibla = qiblaBearing(lat, lng);
+                document.getElementById("bearing").innerHTML = qibla.toFixed(2) + "°";
+            },
+            (err) => {
+                alert("Gagal mendapatkan lokasi GPS: " + err.message);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    } else {
+        alert("Geolokasi tidak didukung pada browser ini.");
+    }
+}
 </script>
 
 </body>
