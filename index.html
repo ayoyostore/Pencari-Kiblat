@@ -59,39 +59,17 @@ color:#222;
 }
 
 .compass{
-
-<div class="compass">
-
-    <div id="dial" class="dial">
-
-        <div class="ticks"></div>
-
-        <div class="north">U</div>
-        <div class="east">T</div>
-        <div class="south">S</div>
-        <div class="west">B</div>
-
-        <div id="qiblaMarker" class="qibla-marker">
-            🕋
-        </div>
-
-    </div>
-
-    <div class="needle">
-        <div class="needle-red"></div>
-        <div class="needle-blue"></div>
-    </div>
-
-    <div id="centerDot" class="center"></div>
-
-</div>
-
-<div id="status" class="status">
-    Arahkan ke Kiblat
-</div>
-
+    width:300px;
+    height:300px;
+    margin:auto;
+    position:relative;
+    border-radius:50%;
+    background:#f5f5f5;
+    border:10px solid white;
+    box-shadow:0 0 20px rgba(0,0,0,.15);
+    overflow:hidden;
 }
-
+    
 .center{
 
 position:absolute;
@@ -341,21 +319,25 @@ color:#ef6c00;
     <div id="dial" class="dial">
 
         <div class="north">U</div>
-
         <div class="east">T</div>
-
         <div class="south">S</div>
-
         <div class="west">B</div>
+
+        <div id="qiblaMarker" class="qibla-marker">🕋</div>
 
     </div>
 
-    <div id="qiblaMarker" class="qibla-marker">
-        🕋
+    <div class="needle">
+        <div class="needle-red"></div>
+        <div class="needle-blue"></div>
     </div>
 
     <div class="center"></div>
 
+</div>
+
+<div id="status" class="status wait">
+    Arahkan ke Kiblat
 </div>
 
 <div class="info">
