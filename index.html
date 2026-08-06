@@ -58,6 +58,8 @@ overflow:hidden;
 background:#fafafa;
 border:10px solid white;
 box-shadow:0 0 25px #0003;
+background:
+radial-gradient(circle,#ffffff 58%,#ececec 59%,#d9d9d9 100%);
 
 }
 
@@ -73,25 +75,23 @@ border-radius:50%;
 
 
 .tick{
-
-position:absolute;
-left:50%;
-top:0;
-width:2px;
-height:145px;
-background:#999;
-transform-origin:center bottom;
-
+    position:absolute;
+    left:50%;
+    top:5px;
+    width:2px;
+    height:18px;
+    background:#888;
+    transform-origin:center 145px;
 }
 
 
 
 .label{
-
 position:absolute;
-font-size:13px;
+font-size:11px;
 font-weight:bold;
-
+color:#444;
+z-index:4;
 }
 
 
@@ -167,6 +167,7 @@ left:-6px;
 top:-120px;
 background:#e53935;
 clip-path:polygon(50% 0,100% 100%,0 100%);
+box-shadow:0 0 10px rgba(255,0,0,.5);
 
 }
 
@@ -180,6 +181,7 @@ left:-6px;
 top:0;
 background:#1565c0;
 clip-path:polygon(0 0,100% 0,50% 100%);
+box-shadow:0 0 10px rgba(0,100,255,.4);
 
 }
 
@@ -220,6 +222,7 @@ z-index:10;
 
 .status{
 
+transition:.4s;
 padding:15px;
 border-radius:30px;
 text-align:center;
@@ -234,11 +237,10 @@ color:#e65100;
 
 
 .status.ok{
-
-background:#d8ffd9;
-color:#008c27;
-border:2px solid #00c853;
-
+background:#2ecc71;
+color:white;
+box-shadow:0 0 20px rgba(46,204,113,.6);
+border:none;
 }
 
 
@@ -384,25 +386,32 @@ let animationStarted=false;
 
 function createTicks(){
 
-let dial=document.getElementById("dial");
+const dial=document.getElementById("dial");
 
+for(let i=0;i<360;i+=5){
 
-for(let i=0;i<72;i++){
-
-let tick=document.createElement("div");
+const tick=document.createElement("div");
 
 tick.className="tick";
 
+if(i%30===0){
 
-let angle=i*5;
+tick.style.height="28px";
+tick.style.width="3px";
+tick.style.background="#333";
 
+}else{
+
+tick.style.height="16px";
+tick.style.width="2px";
+tick.style.background="#999";
+
+}
 
 tick.style.transform=
-`translateX(-50%) rotate(${angle}deg)`;
-
+`translateX(-50%) rotate(${i}deg)`;
 
 dial.appendChild(tick);
-
 
 }
 
