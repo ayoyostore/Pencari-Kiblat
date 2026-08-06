@@ -218,16 +218,16 @@ box-shadow:0 0 8px rgba(0,0,0,.3);
 position:absolute;
 left:50%;
 top:50%;
-font-size:35px;
-z-index:10;
 font-size:36px;
+z-index:10;
+
+transform-origin:center;
 
 filter:drop-shadow(0 0 8px rgba(0,0,0,.35));
 
-transition:.15s linear;
+transition:transform .15s linear;
 
 }
-
 
 
 /* status */
@@ -393,6 +393,8 @@ let smoothHeading = 0;
 
 let animationStarted=false;
 
+let lastHeading = 0;
+
 
 
 // buat garis derajat otomatis
@@ -533,15 +535,34 @@ document.querySelector(".west").style.transform =
 "translateY(-50%) rotate(0deg)";
 
     // Posisi ikon Ka'bah
-    const angle=((qibla-smoothHeading)+360)%360;
+    // Posisi ikon Ka'bah relatif terhadap arah HP
+let angle = (qibla - smoothHeading + 360) % 360;
 
-    document.getElementById("qiblaMarker").style.transform=
-        `translate(-50%,-50%)
-         rotate(${angle}deg)
-         translateY(-125px)
-         rotate(${-angle}deg)`;
 
-    checkQibla(angle);
+// jarak ikon dari pusat kompas
+const radius = 125;
+
+
+// hitung posisi X Y
+const x = Math.sin(rad(angle)) * radius;
+const y = -Math.cos(rad(angle)) * radius;
+
+
+// pasang ikon Ka'bah
+const marker = document.getElementById("qiblaMarker");
+
+marker.style.transform =
+`
+translate(-50%, -50%)
+translate(${x}px, ${y}px)
+`;
+
+
+// putar balik ikon agar tetap tegak
+marker.style.rotate = `${-angle}deg`;
+
+
+checkQibla(angle);
 }
 
 
@@ -580,33 +601,36 @@ function checkQibla(angle){
 
 function animateCompass(){
 
-
-let diff=
-((targetHeading-smoothHeading+540)%360)-180;
-
-
-
-let alpha=0.15;
-
-if(Math.abs(diff)>40) alpha=0.25;
-if(Math.abs(diff)>90) alpha=0.35;
-
-smoothHeading += diff*alpha;
+    // selisih sudut terpendek (-180 sampai +180)
+    let diff =
+    ((targetHeading - smoothHeading + 540) % 360) - 180;
 
 
-smoothHeading=
-(smoothHeading+360)%360;
+    // smoothing adaptif
+    let alpha = 0.12;
+
+    if(Math.abs(diff) > 30){
+        alpha = 0.20;
+    }
+
+    if(Math.abs(diff) > 90){
+        alpha = 0.35;
+    }
 
 
+    // update menuju target
+    smoothHeading += diff * alpha;
 
-updateCompass();
+
+    // normalisasi sudut
+    smoothHeading =
+    ((smoothHeading % 360) + 360) % 360;
 
 
+    updateCompass();
 
-requestAnimationFrame(
-animateCompass
-);
 
+    requestAnimationFrame(animateCompass);
 
 }
 
@@ -615,89 +639,121 @@ animateCompass
 
 // sensor kompas
 
+let firstHeading = true;
+
+
 function orientationHandler(e){
 
-
-let heading=null;
-
+    let heading = null;
 
 
-if(typeof e.webkitCompassHeading==="number"){
+    // iOS Safari - paling akurat
+    if(typeof e.webkitCompassHeading === "number"){
+
+        heading = e.webkitCompassHeading;
+
+    }
 
 
-heading=e.webkitCompassHeading;
+    // Android absolute orientation
+    else if(e.absolute === true && e.alpha !== null){
+
+        heading = 360 - e.alpha;
+
+    }
 
 
-}else if(e.alpha!==null){
+    // Android fallback
+    else if(e.alpha !== null){
+
+        heading = 360 - e.alpha;
+
+    }
 
 
-heading=360-e.alpha;
+    if(heading !== null){
 
+
+        heading =
+        ((heading % 360) + 360) % 360;
+
+
+
+        // sinkron pertama kali sensor aktif
+        if(firstHeading){
+
+            targetHeading = heading;
+            smoothHeading = heading;
+
+            firstHeading = false;
+
+        }
+
+
+
+        // hitung perubahan sudut terpendek
+        let diff =
+        ((heading - targetHeading + 540) % 360) - 180;
+
+
+
+        // filter noise
+        if(Math.abs(diff) < 45){
+
+            targetHeading += diff * 0.2;
+
+        }else{
+
+            // koreksi cepat jika pergeseran besar
+            targetHeading = heading;
+
+        }
+
+
+
+        // normalisasi aman
+        targetHeading =
+        ((targetHeading % 360) + 360) % 360;
+
+
+
+        document.getElementById("heading")
+        .innerHTML =
+        targetHeading.toFixed(1)+"°";
+
+    }
 
 }
-
-
-
-if(heading!==null){
-
-
-targetHeading=
-(heading+360)%360;
-
-
-
-document.getElementById("heading")
-.innerHTML=
-targetHeading.toFixed(1)+"°";
-
-
-}
-
-
-}
-
-
-
-
 
 // lokasi berhasil
 
 function success(pos){
 
-
-let lat=
-pos.coords.latitude;
-
-
-let lng=
-pos.coords.longitude;
+    let lat = pos.coords.latitude;
+    let lng = pos.coords.longitude;
 
 
-
-document.getElementById("lat")
-.innerHTML=
-lat.toFixed(6);
-
+    document.getElementById("lat")
+    .innerHTML =
+    lat.toFixed(6);
 
 
-document.getElementById("lng")
-.innerHTML=
-lng.toFixed(6);
+    document.getElementById("lng")
+    .innerHTML =
+    lng.toFixed(6);
 
 
-
-qibla=qiblaBearing(lat,lng);
-
-
-
-document.getElementById("bearing")
-.innerHTML=
-qibla.toFixed(2)+"°";
+    // hitung arah kiblat
+    qibla = qiblaBearing(lat,lng);
 
 
+    document.getElementById("bearing")
+    .innerHTML =
+    qibla.toFixed(2)+"°";
 
-startCompass();
 
+    // mulai sensor kompas
+    startCompass();
 
 }
 
@@ -742,92 +798,92 @@ maximumAge:0
 
 
 
-// mulai sensor
+let sensorStarted = false;
+
 
 function startCompass(){
 
+    if(sensorStarted){
+        return;
+    }
 
 
-if(
-typeof DeviceOrientationEvent!=="undefined"
-&&
-typeof DeviceOrientationEvent.requestPermission==="function"
-){
+    // iOS 13+
+    if(
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+    ){
+
+        DeviceOrientationEvent.requestPermission()
+        .then(permission => {
+
+            if(permission === "granted"){
+
+                window.addEventListener(
+                    "deviceorientation",
+                    orientationHandler,
+                    true
+                );
+
+
+                sensorStarted = true;
+
+            }else{
+
+                alert("Sensor kompas tidak diizinkan");
+
+            }
+
+        })
+        .catch(error=>{
+
+            console.log(error);
+
+        });
+
+
+    }
+
+    // Android / browser lain
+    else{
+
+
+        if("ondeviceorientationabsolute" in window){
+
+            window.addEventListener(
+                "deviceorientationabsolute",
+                orientationHandler,
+                true
+            );
+
+
+        }else{
+
+
+            window.addEventListener(
+                "deviceorientation",
+                orientationHandler,
+                true
+            );
+
+        }
+
+
+        sensorStarted = true;
+
+    }
 
 
 
-DeviceOrientationEvent.requestPermission()
+    if(!animationStarted){
 
-.then(result=>{
+        animationStarted = true;
 
+        animateCompass();
 
-if(result==="granted"){
-
-
-window.addEventListener(
-
-"deviceorientation",
-
-orientationHandler,
-
-true
-
-);
-
+    }
 
 }
-
-
-});
-
-
-
-}else{
-
-
-
-window.addEventListener(
-
-"deviceorientationabsolute",
-
-orientationHandler,
-
-true
-
-);
-
-
-
-window.addEventListener(
-
-"deviceorientation",
-
-orientationHandler,
-
-true
-
-);
-
-
-
-}
-
-
-
-if(!animationStarted){
-
-
-animationStarted=true;
-
-animateCompass();
-
-
-}
-
-
-
-}
-
 
 
 </script>
