@@ -10,203 +10,91 @@
 <style>
 
 *{
-margin:0;
-padding:0;
 box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
 
-background:#eef3f8;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
+margin:0;
 min-height:100vh;
-
+display:flex;
+justify-content:center;
+align-items:center;
+background:#eef3f8;
 padding:20px;
 
 }
+
 
 .card{
 
 width:100%;
-
-max-width:420px;
-
+max-width:430px;
 background:white;
-
-border-radius:20px;
-
 padding:20px;
-
-box-shadow:0 10px 25px rgba(0,0,0,.12);
+border-radius:25px;
+box-shadow:0 10px 30px #0002;
 
 }
+
 
 h1{
 
 text-align:center;
-
-margin-bottom:20px;
-
 color:#222;
 
 }
 
+
 .compass{
-    width:300px;
-    height:300px;
-    margin:auto;
-    position:relative;
-    border-radius:50%;
-    background:#f5f5f5;
-    border:10px solid white;
-    box-shadow:0 0 20px rgba(0,0,0,.15);
-    overflow:hidden;
-}
-    
-.center{
 
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-width:18px;
-
-height:18px;
-
-margin-left:-9px;
-
-margin-top:-9px;
-
-background:#333;
-
+width:300px;
+height:300px;
+margin:20px auto;
 border-radius:50%;
-
-z-index:100;
-
-}
-
-.needle{
-
-position:absolute;
-
-left:50%;
-
-top:50%;
-
-width:0;
-
-height:0;
-
-z-index:50;
+position:relative;
+overflow:hidden;
+background:#fafafa;
+border:10px solid white;
+box-shadow:0 0 25px #0003;
 
 }
 
-.needle-red{
 
-position:absolute;
-
-width:12px;
-
-height:110px;
-
-left:-6px;
-
-top:-110px;
-
-background:#e53935;
-
-clip-path:polygon(50% 0%,100% 100%,0% 100%);
-
-border-radius:10px;
-
-}
-
-.needle-blue{
-
-position:absolute;
-
-width:12px;
-
-height:110px;
-
-left:-6px;
-
-top:0;
-
-background:#1565c0;
-
-clip-path:polygon(0% 0%,100% 0%,50% 100%);
-
-border-radius:10px;
-
-}
-    
-.info{
-
-margin-top:25px;
-
-font-size:18px;
-
-}
-
-.item{
-
-display:flex;
-
-justify-content:space-between;
-
-margin-top:15px;
-
-}
-
-.value{
-
-font-weight:bold;
-
-}
-
-button{
-
-width:100%;
-
-margin-top:25px;
-
-padding:14px;
-
-border:none;
-
-background:#1976d2;
-
-color:white;
-
-font-size:18px;
-
-border-radius:12px;
-
-cursor:pointer;
-
-}
 
 .dial{
 
 position:absolute;
-left:0;
-top:0;
 width:100%;
 height:100%;
 border-radius:50%;
-transition:none;
+}
+
+
+.tick{
+
+position:absolute;
+left:50%;
+top:0;
+width:2px;
+height:145px;
+background:#999;
+transform-origin:center bottom;
 
 }
+
+
+
+.label{
+
+position:absolute;
+font-size:13px;
+font-weight:bold;
+
+}
+
+
 
 .north,
 .east,
@@ -214,19 +102,22 @@ transition:none;
 .west{
 
 position:absolute;
+font-size:25px;
 font-weight:bold;
-font-size:24px;
+z-index:5;
 
 }
 
+
 .north{
 
+top:12px;
 left:50%;
-top:10px;
 transform:translateX(-50%);
 color:red;
 
 }
+
 
 .east{
 
@@ -236,13 +127,15 @@ transform:translateY(-50%);
 
 }
 
+
 .south{
 
+bottom:12px;
 left:50%;
-bottom:10px;
 transform:translateX(-50%);
 
 }
+
 
 .west{
 
@@ -252,153 +145,275 @@ transform:translateY(-50%);
 
 }
 
+
+/* jarum */
+
+.needle{
+
+position:absolute;
+left:50%;
+top:50%;
+z-index:20;
+
+}
+
+
+.red{
+
+position:absolute;
+width:12px;
+height:120px;
+left:-6px;
+top:-120px;
+background:#e53935;
+clip-path:polygon(50% 0,100% 100%,0 100%);
+
+}
+
+
+.blue{
+
+position:absolute;
+width:12px;
+height:120px;
+left:-6px;
+top:0;
+background:#1565c0;
+clip-path:polygon(0 0,100% 0,50% 100%);
+
+}
+
+
+
+.center{
+
+position:absolute;
+left:50%;
+top:50%;
+width:20px;
+height:20px;
+margin:-10px;
+background:#333;
+border-radius:50%;
+z-index:30;
+
+}
+
+
+
+/* kaabah */
+
 .qibla-marker{
 
 position:absolute;
-
 left:50%;
-
 top:50%;
-
-font-size:34px;
-
-transform-origin:center center;
+font-size:35px;
+z-index:10;
 
 }
 
-    .status{
 
-margin-top:20px;
 
-padding:14px;
+/* status */
 
+
+.status{
+
+padding:15px;
 border-radius:30px;
-
 text-align:center;
-
-font-size:18px;
-
 font-weight:bold;
+font-size:18px;
+margin-top:15px;
 
-background:#eeeeee;
-
-transition:.3s;
+background:#ffe0b2;
+color:#e65100;
 
 }
+
 
 .status.ok{
 
-background:#d7ffd9;
-
-color:#0a8a2a;
-
+background:#d8ffd9;
+color:#008c27;
 border:2px solid #00c853;
 
 }
 
-.status.wait{
 
-background:#ffe0b2;
 
-color:#ef6c00;
+.info{
+
+margin-top:20px;
+font-size:17px;
 
 }
 
-</style>
 
+.item{
+
+display:flex;
+justify-content:space-between;
+margin:12px 0;
+
+}
+
+
+.value{
+
+font-weight:bold;
+
+}
+
+
+button{
+
+width:100%;
+padding:15px;
+margin-top:20px;
+border:0;
+border-radius:15px;
+background:#1976d2;
+color:white;
+font-size:18px;
+
+}
+
+
+</style>
 </head>
 
 <body>
+
 
 <div class="card">
 
 <h1>Pencari Kiblat</h1>
 
+
 <div class="compass">
 
-    <div id="dial" class="dial">
 
-        <div class="north">U</div>
-        <div class="east">T</div>
-        <div class="south">S</div>
-        <div class="west">B</div>
+<div id="dial" class="dial">
 
-        <div id="qiblaMarker" class="qibla-marker">🕋</div>
+<div class="north">U</div>
+<div class="east">T</div>
+<div class="south">S</div>
+<div class="west">B</div>
 
-    </div>
 
-    <div class="needle">
-        <div class="needle-red"></div>
-        <div class="needle-blue"></div>
-    </div>
+<div id="qiblaMarker"
+class="qibla-marker">
+🕋
+</div>
 
-    <div class="center"></div>
 
 </div>
 
-<div id="status" class="status wait">
-    Arahkan ke Kiblat
+
+<div class="needle">
+
+<div class="red"></div>
+<div class="blue"></div>
+
+</div>
+
+
+<div class="center"></div>
+
+
+</div>
+
+
+<div id="status" class="status">
+Arahkan ke Kiblat
 </div>
 
 <div class="info">
 
 <div class="item">
-
 <span>Latitude</span>
-
 <span id="lat" class="value">-</span>
-
 </div>
 
 <div class="item">
-
 <span>Longitude</span>
-
 <span id="lng" class="value">-</span>
-
 </div>
 
 <div class="item">
-    
 <span>Heading</span>
-    
 <span id="heading" class="value">0°</span>
-    
 </div>
 
 <div class="item">
-
 <span>Arah Kiblat</span>
-
 <span id="bearing" class="value">-</span>
-
 </div>
 
 </div>
+
 
 <button onclick="getLocation()">
-
 Ambil Lokasi
-
 </button>
 
+
 </div>
+
 
 <script>
 
-const kaabaLat=21.422487;
 
-const kaabaLng=39.826206;
-    
+const kaabaLat = 21.422487;
+const kaabaLng = 39.826206;
+
+
 let qibla = 0;
 
 let targetHeading = 0;
-    
+
 let smoothHeading = 0;
 
-let animationStarted = false;
+let animationStarted=false;
 
-const DEAD_ZONE = 0.5;
+
+
+// buat garis derajat otomatis
+
+function createTicks(){
+
+let dial=document.getElementById("dial");
+
+
+for(let i=0;i<72;i++){
+
+let tick=document.createElement("div");
+
+tick.className="tick";
+
+
+let angle=i*5;
+
+
+tick.style.transform=
+`translateX(-50%) rotate(${angle}deg)`;
+
+
+dial.appendChild(tick);
+
+
+}
+
+}
+
+
+createTicks();
+
+
+
+// konversi sudut
 
 function rad(x){
 
@@ -406,13 +421,18 @@ return x*Math.PI/180;
 
 }
 
+
 function deg(x){
 
 return x*180/Math.PI;
 
 }
 
+
+// hitung arah kiblat
+
 function qiblaBearing(lat,lng){
+
 
 let phi1=rad(lat);
 
@@ -420,242 +440,380 @@ let phi2=rad(kaabaLat);
 
 let dlambda=rad(kaabaLng-lng);
 
+
+
 let y=Math.sin(dlambda);
 
-let x=Math.cos(phi1)*Math.tan(phi2)-Math.sin(phi1)*Math.cos(dlambda);
 
-let brng=deg(Math.atan2(y,x));
+let x=
+Math.cos(phi1)*Math.tan(phi2)
+-
+Math.sin(phi1)*Math.cos(dlambda);
 
-return (brng+360)%360;
+
+
+return (deg(Math.atan2(y,x))+360)%360;
+
 
 }
 
+
+
+// update kompas
+
 function updateCompass(){
 
-document.getElementById("dial").style.transform=
+
+
+let dial=document.getElementById("dial");
+
+
+// putar lingkaran
+
+dial.style.transform=
 `rotate(${-smoothHeading}deg)`;
+
+
+
+
+// posisi ka'bah
 
 let angle=qibla-smoothHeading;
 
-document.getElementById("qiblaMarker").style.transform=
-`translate(-50%,-50%)
+
+let marker=
+document.getElementById("qiblaMarker");
+
+
+
+marker.style.transform=
+`
+translate(-50%,-50%)
 rotate(${angle}deg)
 translateY(-125px)
-rotate(${-angle}deg)`;
+rotate(${-angle}deg)
+`;
 
-updateStatus(angle);
+
+
+// huruf tetap tegak
+
 document.querySelector(".north").style.transform=
 `translateX(-50%) rotate(${smoothHeading}deg)`;
+
 
 document.querySelector(".east").style.transform=
 `translateY(-50%) rotate(${smoothHeading}deg)`;
 
+
 document.querySelector(".south").style.transform=
 `translateX(-50%) rotate(${smoothHeading}deg)`;
+
 
 document.querySelector(".west").style.transform=
 `translateY(-50%) rotate(${smoothHeading}deg)`;
 
+
+
+checkQibla(angle);
+
+
 }
 
-function updateStatus(angle){
+
+
+// status kiblat
+
+function checkQibla(angle){
+
 
 let diff=((angle+540)%360)-180;
 
+
 let status=document.getElementById("status");
+
+
 
 if(Math.abs(diff)<=3){
 
+
 status.className="status ok";
 
-status.innerHTML="✅ Sudah Menghadap Kiblat";
+status.innerHTML=
+"✅ Sudah Menghadap Kiblat";
+
 
 }else{
 
-status.className="status wait";
 
-status.innerHTML="↻ Putar " + Math.abs(diff).toFixed(1)+"°";
+status.className="status";
 
-}
+status.innerHTML=
+"↻ Putar "
++
+Math.abs(diff).toFixed(1)
++
+"°";
 
-}
-    
-function success(pos){
-
-    let lat = pos.coords.latitude;
-    let lng = pos.coords.longitude;
-
-    document.getElementById("lat").innerHTML = lat.toFixed(6);
-    document.getElementById("lng").innerHTML = lng.toFixed(6);
-
-    qibla = qiblaBearing(lat,lng);
-
-    document.getElementById("bearing").innerHTML =
-        qibla.toFixed(2)+"°";
-    startCompass();
 
 }
 
-function error(){
-
-alert("Lokasi tidak tersedia");
 
 }
 
-function orientationHandler(event){
 
-    let newHeading = null;
 
-    // Safari / iPhone
-    if(typeof event.webkitCompassHeading === "number"){
-
-        newHeading = event.webkitCompassHeading;
-
-    }
-    // Android
-    else if(event.alpha !== null){
-
-        newHeading = 360 - event.alpha;
-
-    }
-
-    if(newHeading === null) return;
-
-    newHeading = (newHeading + 360) % 360;
-
-    targetHeading = newHeading;
-
-document.getElementById("heading").innerHTML =
-    targetHeading.toFixed(1) + "°";
-}
-
-function shortestAngle(current,target){
-
-    let diff = target-current;
-
-    diff = ((diff+540)%360)-180;
-
-    return diff;
-
-}
+// smoothing
 
 function animateCompass(){
 
-    let diff = shortestAngle(
-        smoothHeading,
-        targetHeading
-    );
 
-    if(Math.abs(diff)>DEAD_ZONE){
+let diff=
+((targetHeading-smoothHeading+540)%360)-180;
 
-        let alpha;
 
-        if(Math.abs(diff)>60){
 
-    alpha=0.28;
+smoothHeading += diff*0.08;
 
-}else if(Math.abs(diff)>25){
 
-    alpha=0.18;
+smoothHeading=
+(smoothHeading+360)%360;
 
-}else if(Math.abs(diff)>10){
 
-    alpha=0.12;
 
-}else{
+updateCompass();
 
-    alpha=0.05;
+
+
+requestAnimationFrame(
+animateCompass
+);
+
 
 }
 
-        smoothHeading += diff*alpha;
 
-        smoothHeading =
-        (smoothHeading+360)%360;
 
-    }
 
-    updateCompass();
+// sensor kompas
 
-    requestAnimationFrame(
-        animateCompass
-    );
+function orientationHandler(e){
+
+
+let heading=null;
+
+
+
+if(typeof e.webkitCompassHeading==="number"){
+
+
+heading=e.webkitCompassHeading;
+
+
+}else if(e.alpha!==null){
+
+
+heading=360-e.alpha;
+
 
 }
+
+
+
+if(heading!==null){
+
+
+targetHeading=
+(heading+360)%360;
+
+
+
+document.getElementById("heading")
+.innerHTML=
+targetHeading.toFixed(1)+"°";
+
+
+}
+
+
+}
+
+
+
+
+
+// lokasi berhasil
+
+function success(pos){
+
+
+let lat=
+pos.coords.latitude;
+
+
+let lng=
+pos.coords.longitude;
+
+
+
+document.getElementById("lat")
+.innerHTML=
+lat.toFixed(6);
+
+
+
+document.getElementById("lng")
+.innerHTML=
+lng.toFixed(6);
+
+
+
+qibla=qiblaBearing(lat,lng);
+
+
+
+document.getElementById("bearing")
+.innerHTML=
+qibla.toFixed(2)+"°";
+
+
+
+startCompass();
+
+
+}
+
+
+
+function error(){
+
+alert(
+"Lokasi tidak tersedia"
+);
+
+}
+
+
+
 
 function getLocation(){
 
-    navigator.geolocation.getCurrentPosition(
-        success,
-        error,
-        {
-            enableHighAccuracy:true,
-            timeout:10000,
-            maximumAge:0
-        }
-    );
+
+navigator.geolocation.getCurrentPosition(
+
+success,
+
+error,
+
+{
+
+enableHighAccuracy:true,
+
+timeout:10000,
+
+maximumAge:0
 
 }
-    
+
+);
+
+
+}
+
+
+
+
+
+// mulai sensor
+
 function startCompass(){
 
-    if(typeof DeviceOrientationEvent !== "undefined" &&
-       typeof DeviceOrientationEvent.requestPermission === "function"){
 
-        // iPhone / iPad
-        DeviceOrientationEvent.requestPermission()
-        .then(permission=>{
 
-            if(permission==="granted"){
+if(
+typeof DeviceOrientationEvent!=="undefined"
+&&
+typeof DeviceOrientationEvent.requestPermission==="function"
+){
 
-                window.addEventListener(
-                    "deviceorientation",
-                    orientationHandler,
-                    true
-                );
 
-                if(!animationStarted){
-                    animationStarted=true;
-                    animateCompass();
-                }
 
-            }
+DeviceOrientationEvent.requestPermission()
 
-        });
+.then(result=>{
 
-    }else{
 
-        // Android
+if(result==="granted"){
 
-        if ("ondeviceorientationabsolute" in window) {
 
-    window.addEventListener(
-        "deviceorientationabsolute",
-        orientationHandler,
-        true
-    );
+window.addEventListener(
 
-} else {
+"deviceorientation",
 
-    window.addEventListener(
-        "deviceorientation",
-        orientationHandler,
-        true
-    );
+orientationHandler,
+
+true
+
+);
+
 
 }
 
-        if(!animationStarted){
-            animationStarted=true;
-            animateCompass();
-        }
 
-    }
+});
+
+
+
+}else{
+
+
+
+window.addEventListener(
+
+"deviceorientationabsolute",
+
+orientationHandler,
+
+true
+
+);
+
+
+
+window.addEventListener(
+
+"deviceorientation",
+
+orientationHandler,
+
+true
+
+);
+
+
 
 }
-  
+
+
+
+if(!animationStarted){
+
+
+animationStarted=true;
+
+animateCompass();
+
+
+}
+
+
+
+}
+
+
 
 </script>
+
 
 </body>
 </html>
