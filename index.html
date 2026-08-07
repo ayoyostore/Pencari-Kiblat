@@ -213,37 +213,32 @@
       height: 20px;
     }
 
-    /* Status Banner */
+    /* Status Banner - Default (Belum Menghadap / Merah) */
     .status-banner {
       margin-top: 20px;
       padding: 12px 20px;
       border-radius: 50px;
       display: flex;
       align-items: center;
-      background: #f0f4f8;
-      border: 1px solid #d0dbe5;
-      color: #333;
+      background: #fdeded;
+      border: 1.5px solid #f44336;
       transition: all 0.3s ease;
-    }
-
-    .status-banner.ok {
-      background: #e8f8f0;
-      border: 1.5px solid #2ecc71;
     }
 
     .status-icon {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: #2ecc71;
+      background: #f44336;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-right: 12px;
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       flex-shrink: 0;
+      transition: all 0.3s ease;
     }
 
     .status-text {
@@ -254,13 +249,28 @@
     .status-title {
       font-size: 15px;
       font-weight: 700;
-      color: #27ae60;
+      color: #d32f2f;
+      transition: color 0.3s ease;
     }
 
     .status-sub {
       font-size: 13px;
       color: #555;
       margin-top: 1px;
+    }
+
+    /* Status Banner - Pas / Menghadap Kiblat (Hijau) */
+    .status-banner.ok {
+      background: #e8f8f0;
+      border-color: #2ecc71;
+    }
+
+    .status-banner.ok .status-icon {
+      background: #2ecc71;
+    }
+
+    .status-banner.ok .status-title {
+      color: #27ae60;
     }
 
     /* Info Table */
@@ -367,11 +377,11 @@
   </div>
 
   <!-- STATUS BOX -->
-  <div id="statusBanner" class="status-banner ok">
-    <div class="status-icon">✓</div>
+  <div id="statusBanner" class="status-banner">
+    <div id="statusIcon" class="status-icon">✕</div>
     <div class="status-text">
-      <div id="statusTitle" class="status-title">Sudah Menghadap Kiblat</div>
-      <div id="statusSub" class="status-sub">Selisih 0.24°</div>
+      <div id="statusTitle" class="status-title">Belum Menghadap Kiblat</div>
+      <div id="statusSub" class="status-sub">Putar HP</div>
     </div>
   </div>
 
@@ -498,19 +508,26 @@
   }
 
   function checkQibla(angle) {
-    const diff = Math.abs(((angle + 540) % 360) - 180);
+    // Menghitung selisih sudut terkecil (-180 sampai 180)
+    let diff = ((angle + 540) % 360) - 180;
+    let absDiff = Math.abs(diff);
+
     const banner = document.getElementById("statusBanner");
+    const icon = document.getElementById("statusIcon");
     const title = document.getElementById("statusTitle");
     const sub = document.getElementById("statusSub");
 
-    if (diff <= 3) {
+    // Jika selisih toleransi <= 3 derajat, maka dianggap pas menghadap kiblat
+    if (absDiff <= 3) {
       banner.className = "status-banner ok";
+      icon.innerText = "✓";
       title.innerText = "Sudah Menghadap Kiblat";
-      sub.innerText = "Selisih " + diff.toFixed(2) + "°";
+      sub.innerText = "Selisih " + absDiff.toFixed(2) + "°";
     } else {
       banner.className = "status-banner";
+      icon.innerText = "✕";
       title.innerText = "Belum Menghadap Kiblat";
-      sub.innerText = "Putar HP " + diff.toFixed(1) + "°";
+      sub.innerText = "Selisih " + absDiff.toFixed(2) + "°";
     }
   }
 
