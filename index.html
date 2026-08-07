@@ -97,7 +97,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       line-height: 1;
+      text-align: center;
     }
 
     .cardinal-letter {
@@ -105,9 +107,10 @@
     }
 
     .cardinal-deg {
-      font-size: 8px;
+      font-size: 9px;
       color: #555;
-      margin-top: 1px;
+      margin-top: 2px;
+      font-weight: 600;
     }
 
     .north {
@@ -350,7 +353,7 @@
 
   <div class="compass-container">
     <div id="dial" class="dial">
-      <!-- MATA ANGIN POKOK -->
+      <!-- MATA ANGIN POKOK (SEMUA MENGGUNAKAN TAMPILAN VERTIKAL RAPI) -->
       <div class="cardinal north"><span class="cardinal-letter">U</span><span class="cardinal-deg">0<br>360</span></div>
       <div class="cardinal east"><span class="cardinal-letter">T</span><span class="cardinal-deg">90</span></div>
       <div class="cardinal south"><span class="cardinal-letter">S</span><span class="cardinal-deg">180</span></div>
@@ -508,7 +511,6 @@
   }
 
   function checkQibla(angle) {
-    // Menghitung selisih sudut terkecil (-180 sampai 180)
     let diff = ((angle + 540) % 360) - 180;
     let absDiff = Math.abs(diff);
 
@@ -517,7 +519,6 @@
     const title = document.getElementById("statusTitle");
     const sub = document.getElementById("statusSub");
 
-    // Jika selisih toleransi <= 3 derajat, maka dianggap pas menghadap kiblat
     if (absDiff <= 3) {
       banner.className = "status-banner ok";
       icon.innerText = "✓";
